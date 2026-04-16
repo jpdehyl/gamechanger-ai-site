@@ -274,7 +274,7 @@ export default function Home() {
             <div className="flex flex-col gap-4 lg:items-end">
               <a
                 href="mailto:hello@gamechanger.ai"
-                className="inline-block rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition-colors hover:bg-black/80"
+                className="inline-block rounded-full bg-black px-8 py-4 text-sm font-medium transition-colors hover:bg-black/80 text-[#f5eded]"
               >
                 hello@gamechanger.ai
               </a>
