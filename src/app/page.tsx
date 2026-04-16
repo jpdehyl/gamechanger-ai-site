@@ -46,7 +46,7 @@ export default function Home() {
             <div className="flex flex-wrap items-center gap-4">
               <a
                 href="#cta"
-                className="rounded-full bg-black px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-black/80"
+                className="rounded-full bg-black px-7 py-3.5 text-sm font-medium transition-colors hover:bg-black/80 text-[#f5eded]"
               >
                 Book the working session
               </a>
