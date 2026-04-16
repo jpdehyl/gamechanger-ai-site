@@ -19,7 +19,7 @@ export default function Home() {
           <span className="text-sm font-medium tracking-wide text-black">GameChanger AI</span>
           <a
             href="#cta"
-            className="rounded-full border border-black bg-black px-5 py-2 text-xs font-medium text-white transition-colors hover:bg-black/80"
+            className="rounded-full border border-black bg-black px-5 py-2 text-xs font-medium transition-colors hover:bg-black/80 text-[#f0ebeb]"
           >
             Book a session
           </a>
