@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { AiWire } from "@/components/ai-wire";
 import {
   beforeAfter,
   cta,
@@ -7,7 +8,6 @@ import {
   fit,
   hero,
   heroStats,
-  marquee,
   processSteps,
   proof,
   services,
@@ -516,13 +516,7 @@ export default function Home() {
         </div>
         <RuleEdge variant="top" />
 
-        <div className="cta-marquee" aria-hidden="true">
-          <div className="cta-marquee-track">
-            {[...marquee, ...marquee].map((m, i) => (
-              <span key={i}>{m}</span>
-            ))}
-          </div>
-        </div>
+        <AiWire />
 
         <div className="cta-band">
           <div className="cta-left">
