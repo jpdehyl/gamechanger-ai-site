@@ -54,14 +54,20 @@ export default function Home() {
 
   return (
     <main>
-      {/* MASTHEAD — editorial strip above nav */}
-      <div className="masthead" role="banner" aria-label="Positioning">
+      {/* MASTHEAD — prominent nameplate at top of page */}
+      <section className="masthead" role="banner" aria-label="Positioning">
         <div className="container-x masthead-inner">
-          <span className="masthead-mark">{site.brand}</span>
-          <span className="masthead-rule" aria-hidden="true" />
-          <span className="masthead-tag">{site.tagline}</span>
+          <div className="masthead-meta">
+            <span>Masthead · 00</span>
+            <span className="right">Est. 2025</span>
+          </div>
+          <div className="masthead-mark">{site.brand}</div>
+          <div className="masthead-tagline-row">
+            <span className="masthead-rule" aria-hidden="true" />
+            <p className="masthead-tag">{site.tagline}</p>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* NAV */}
       <header className="nav">
