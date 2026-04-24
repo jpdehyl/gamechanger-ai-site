@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GameChanger AI — Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background:#f3f0e8;
+    --background-elev:#ece8dc;
+    --foreground:#0f0f0f;
+    --foreground-mute:#5a5a55;
+    --rule:#d6d1c2;
+    --rule-strong:#b9b3a0;
+    --signal:#1749ff;
+    --signal-ink:#ffffff;
+    --font-sans:'Geist', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:'Geist Mono', ui-monospace, monospace;
+    --font-serif:'DM Serif Display', ui-serif, Georgia, serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--background);color:var(--foreground);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--signal);color:var(--signal-ink)}
+
+  .container{max-width:1280px;margin:0 auto;padding:0 24px}
+  @media(min-width:768px){.container{padding:0 40px}}
+
+  /* ---------- NAV ---------- */
+  .nav{position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--background) 92%, transparent);border-bottom:1px solid var(--rule);backdrop-filter:saturate(1.1) blur(2px)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+  .brand{display:flex;align-items:baseline;gap:14px;white-space:nowrap;min-width:0}
+  .brand-mark{font-family:var(--font-serif);font-size:20px;letter-spacing:-0.01em;line-height:1;white-space:nowrap}
+  .brand-sub{font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);white-space:nowrap;display:none}
+  @media(min-width:1100px){.brand-sub{display:inline}}
+  .nav-links{display:none;gap:36px;align-items:center}
+  @media(min-width:900px){.nav-links{display:flex}}
+  .nav-link{font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground);position:relative;padding:4px 0}
+  .nav-link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--foreground);transition:width .2s ease-out}
+  .nav-link:hover::after{width:100%}
+  .btn{display:inline-flex;align-items:center;gap:10px;border-radius:9999px;padding:10px 18px;font-family:var(--font-sans);font-size:13px;font-weight:500;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}
+  .btn-primary{background:var(--foreground);color:#f5eded}
+  .btn-primary:hover{background:#000}
+  .btn-ghost{background:transparent;color:var(--foreground);border:1px solid color-mix(in oklab, var(--foreground) 22%, transparent)}
+  .btn-ghost:hover{border-color:color-mix(in oklab, var(--foreground) 55%, transparent)}
+  .btn .dot{width:6px;height:6px;border-radius:9999px;background:var(--signal);display:inline-block}
+
+  /* ---------- Ruled grid ---------- */
+  /* 12 columns, with column hairlines and tick marks at edges */
+  .ruled{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    column-gap:24px;
+  }
+  @media(max-width:900px){
+    .ruled{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:16px}
+  }
+  /* vertical column hairlines, drawn with a repeating background on a pseudo-layer behind content */
+  .ruled-surface{position:relative;padding:36px 0 28px}
+  .ruled-surface::before{
+    content:"";
+    position:absolute;inset:0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(to right, var(--rule) 1px, transparent 1px);
+    background-size:calc((100% + 24px)/12) 100%;
+    mask-image:linear-gradient(to right, transparent 0, black 0, black calc(100% - 0px), transparent 100%);
+    opacity:.55;
+  }
+  @media(max-width:900px){
+    .ruled-surface::before{background-size:calc((100% + 16px)/6) 100%}
+  }
+  /* top and bottom ruled edges with column tick marks + numbers */
+  .rule-edge{
+    position:relative;height:22px;
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.22em;color:var(--foreground-mute);
+  }
+  @media(max-width:900px){.rule-edge{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:16px}}
+  .rule-edge.top{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .rule-edge.bottom{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .rule-edge .cell{position:relative;display:flex;align-items:center;justify-content:flex-start;padding-left:6px}
+  .rule-edge.top .cell::before,
+  .rule-edge.bottom .cell::before{
+    content:"";position:absolute;left:0;width:1px;height:6px;background:var(--rule-strong);
+  }
+  .rule-edge.top .cell::before{top:-1px}
+  .rule-edge.bottom .cell::before{bottom:-1px}
+  .rule-edge.top .cell:last-child::after,
+  .rule-edge.bottom .cell:last-child::after{
+    content:"";position:absolute;right:0;width:1px;height:6px;background:var(--rule-strong);
+  }
+  .rule-edge.top .cell:last-child::after{top:-1px}
+  .rule-edge.bottom .cell:last-child::after{bottom:-1px}
+  .rule-edge .num{opacity:.75}
+
+  /* Column spans */
+  .c-1-7{grid-column:1 / span 7}
+  .c-8-12{grid-column:8 / span 5}
+  @media(max-width:900px){
+    .c-1-7{grid-column:1 / -1}
+    .c-8-12{grid-column:1 / -1;margin-top:48px}
+  }
+
+  /* ---------- HERO content ---------- */
+  .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:0.32em;text-transform:uppercase;color:var(--signal);display:inline-flex;gap:10px;align-items:center}
+  .kicker::before{content:"";width:18px;height:1px;background:var(--signal)}
+  h1.hero{
+    font-family:var(--font-serif);font-weight:400;
+    font-size:clamp(44px, 7.2vw, 92px);
+    line-height:1.04;letter-spacing:-0.005em;
+    margin-top:24px;
+    text-wrap:balance;
+  }
+  .hero-lede{
+    font-family:var(--font-sans);font-weight:400;
+    font-size:18px;line-height:1.55;
+    color:var(--foreground-mute);
+    max-width:46ch;margin-top:28px;
+  }
+  .hero-meta{
+    margin-top:36px;display:grid;grid-template-columns:auto 1fr;gap:18px 22px;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--foreground-mute);
+    max-width:520px;
+  }
+  .hero-meta dt{color:var(--foreground)}
+  .hero-meta dd{color:var(--foreground-mute)}
+  .hero-cta{margin-top:44px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .cta-note{font-family:var(--font-mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--foreground-mute);margin-left:4px}
+
+  /* ---------- Diagram ---------- */
+  .diagram{
+    position:relative;
+    border:1px solid var(--rule);
+    background:transparent;
+    padding:22px 20px 18px;
+  }
+  .diagram-header{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);
+    padding-bottom:14px;border-bottom:1px solid var(--rule);
+  }
+  .diagram-header .left{color:var(--foreground)}
+  .diagram-body{padding:18px 0 6px;display:grid;gap:22px}
+  .row{
+    display:grid;grid-template-columns:80px minmax(0,1fr);align-items:center;gap:14px;
+    position:relative;
+  }
+  .row-label{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);
+    display:flex;align-items:center;gap:8px;
+  }
+  .row-label .tick{width:8px;height:1px;background:var(--rule-strong)}
+  .nodes{display:grid;grid-template-columns:repeat(var(--cols,4),1fr);gap:0;align-items:center;position:relative}
+  .node{
+    position:relative;
+    border:1px solid var(--foreground);
+    background:transparent;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.08em;text-transform:lowercase;
+    color:var(--foreground);
+    padding:10px 6px;
+    text-align:center;
+    min-height:40px;
+    display:flex;align-items:center;justify-content:center;
+    white-space:nowrap;
+    min-width:0;overflow:visible;
+  }
+  .node .idx{
+    position:absolute;top:3px;left:5px;font-size:8px;letter-spacing:0.18em;color:var(--foreground-mute);opacity:.7;
+  }
+  .node.is-ai{
+    background:var(--signal);color:var(--signal-ink);border-color:var(--signal);
+    text-transform:uppercase;letter-spacing:0.3em;font-weight:500;font-size:12px;
+    box-shadow:0 0 0 3px var(--background), 0 0 0 4px var(--signal);
+  }
+  .node.is-ai .idx{color:rgba(255,255,255,.7)}
+  /* connectors */
+  .conn{
+    position:relative;height:1px;background:var(--foreground);align-self:center;
+  }
+  .conn::after{
+    content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+    width:0;height:0;border-left:5px solid var(--foreground);border-top:3px solid transparent;border-bottom:3px solid transparent;
+  }
+  .conn.is-ai-in::after{border-left-color:var(--signal)}
+  .conn.is-ai-in{background:var(--signal)}
+  .conn.is-ai-out{background:var(--signal)}
+  .conn.is-ai-out::after{border-left-color:var(--foreground)}
+
+  /* row layout: nodes w/ connectors between them, using a flex track */
+  /* 3-node track: [node] [conn] [node] [conn] [node] */
+  .track{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);align-items:center;width:100%;min-width:0}
+  .track.decision{position:relative;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr)}
+
+  /* vertical drop between rows for AI node — centered over middle cell of track */
+  .vconn{
+    position:absolute;width:1px;background:var(--signal);
+    left:50%;transform:translateX(-0.5px);
+  }
+  .vconn.up{bottom:100%;height:22px}
+  .vconn.down{top:100%;height:22px}
+  .vconn::after{
+    content:"";position:absolute;left:50%;width:0;height:0;
+    border-left:3px solid transparent;border-right:3px solid transparent;
+  }
+  .vconn.down::after{bottom:-1px;transform:translateX(-50%);border-top:5px solid var(--signal)}
+  .vconn.up::after{top:-1px;transform:translateX(-50%);border-bottom:5px solid var(--signal)}
+
+  .diagram-caption{
+    margin-top:18px;padding-top:14px;border-top:1px solid var(--rule);
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .diagram-caption .lead{color:var(--foreground)}
+
+  /* LIVE dot blink */
+  @media (prefers-reduced-motion: no-preference){
+    .diagram-header .live-dot{display:inline-block;animation:blink 1.6s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  }
+
+  /* ---------- Diagram motion (option 2) ---------- */
+  @media (prefers-reduced-motion: no-preference){
+    /* tokens travel left→right across each horizontal connector */
+    .conn{overflow:visible}
+    .conn::before{
+      content:"";position:absolute;top:50%;left:0;
+      width:6px;height:6px;margin-top:-3px;margin-left:-3px;
+      background:var(--foreground);
+      animation:token-flow 6s linear infinite;
+    }
+    .conn.is-ai-in::before{background:var(--signal);animation-delay:.45s}
+    .conn.is-ai-out::before{background:var(--signal);animation-delay:1.55s}
+    /* row 1 staggers */
+    .row[data-row="intake"]   .track > .conn:nth-of-type(2)::before{animation-delay:0s}
+    .row[data-row="intake"]   .track > .conn:nth-of-type(4)::before{animation-delay:.55s}
+    /* row 3 staggers (later in cycle) */
+    .row[data-row="output"]   .track > .conn:nth-of-type(2)::before{animation-delay:3.2s}
+    .row[data-row="output"]   .track > .conn:nth-of-type(4)::before{animation-delay:3.75s}
+
+    @keyframes token-flow{
+      0%   {left:0;     opacity:0}
+      8%   {opacity:1}
+      88%  {opacity:1}
+      100% {left:100%;  opacity:0}
+    }
+
+    /* vertical drop flash — pulse synced with AI activation */
+    .vconn{transform-origin:top;animation:vdrop 6s ease-in-out infinite;opacity:.35}
+    .vconn.up{animation-delay:.2s}
+    .vconn.down{animation-delay:2.5s}
+    @keyframes vdrop{
+      0%,15%   {opacity:.2;transform:translateX(-0.5px) scaleY(.6)}
+      22%      {opacity:1;transform:translateX(-0.5px) scaleY(1)}
+      40%      {opacity:.85}
+      55%,100% {opacity:.2;transform:translateX(-0.5px) scaleY(.6)}
+    }
+
+    /* AI node breathes when token arrives */
+    .node.is-ai{animation:ai-pulse 6s ease-in-out infinite}
+    @keyframes ai-pulse{
+      0%,18%   {box-shadow:0 0 0 3px var(--background), 0 0 0 4px var(--signal)}
+      28%      {box-shadow:0 0 0 3px var(--background), 0 0 0 6px var(--signal)}
+      55%      {box-shadow:0 0 0 3px var(--background), 0 0 0 4px var(--signal)}
+      100%     {box-shadow:0 0 0 3px var(--background), 0 0 0 4px var(--signal)}
+    }
+
+    /* node tick — every node gets a brief border flash as its incoming token lands */
+    .node{transition:none}
+    .row[data-row="intake"] .track > .node:nth-of-type(3){animation:node-tick 6s linear infinite;animation-delay:.5s}
+    .row[data-row="intake"] .track > .node:nth-of-type(5){animation:node-tick 6s linear infinite;animation-delay:1.05s}
+    .row[data-row="decision"] .track > .node:nth-of-type(5){animation:node-tick 6s linear infinite;animation-delay:2.05s}
+    .row[data-row="output"] .track > .node:nth-of-type(3){animation:node-tick 6s linear infinite;animation-delay:3.7s}
+    .row[data-row="output"] .track > .node:nth-of-type(5){animation:node-tick 6s linear infinite;animation-delay:4.25s}
+    @keyframes node-tick{
+      0%, 8%   {background:transparent;color:var(--foreground)}
+      9%       {background:var(--foreground);color:var(--background)}
+      18%      {background:transparent;color:var(--foreground)}
+      100%     {background:transparent;color:var(--foreground)}
+    }
+  }
+
+  /* ---------- Stats bar ---------- */
+  .stats-wrap{margin-top:48px}
+  .stats{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  }
+  @media(max-width:900px){.stats{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:16px}}
+  .stat{grid-column:span 4;padding:32px 0 30px;position:relative}
+  @media(max-width:900px){.stat{grid-column:span 6;padding:26px 0;border-bottom:1px solid var(--rule)}.stat:last-child{border-bottom:0}}
+  .stat + .stat{border-left:1px solid var(--rule)}
+  @media(max-width:900px){.stat + .stat{border-left:0}}
+  .stat .label-top{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);
+    display:flex;justify-content:space-between;
+  }
+  .stat .value{
+    font-family:var(--font-serif);font-weight:400;font-size:clamp(40px,4.6vw,56px);line-height:1;margin-top:22px;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-0.01em;
+  }
+  .stat .value .unit{font-family:var(--font-mono);font-size:14px;color:var(--foreground-mute);letter-spacing:0.1em;margin-left:6px;vertical-align:super;text-transform:uppercase}
+  .stat .desc{margin-top:16px;font-size:14px;line-height:1.55;color:var(--foreground-mute);max-width:32ch}
+  .stat.first .label-top, .stat.first .desc, .stat.first .value{padding-right:24px}
+  .stat.mid{padding-left:24px;padding-right:24px}
+  .stat.last{padding-left:24px}
+
+  /* indent row labels to align with left edge of diagram */
+  .diagram-inner{padding:6px 4px 0}
+
+  /* ============ HERO MONDRIAN PLATE (corner) ============ */
+  .plate{margin-top:48px;display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:end;max-width:520px}
+  .plate .mond{
+    display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;
+    width:160px;height:108px;background:var(--foreground);
+  }
+  .plate .mond > div{background:#fff}
+  .plate .mond .b1{grid-column:1;grid-row:1 / span 2;background:#1749ff}
+  .plate .mond .b2{grid-column:2;grid-row:1;background:#ffde59}
+  .plate .mond .b3{grid-column:3;grid-row:1;background:#fff}
+  .plate .mond .b4{grid-column:2;grid-row:2;background:#0f0f0f}
+  .plate .mond .b5{grid-column:3;grid-row:2;background:#e53935}
+  .plate-cap{font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);line-height:1.6}
+  .plate-cap b{color:var(--foreground);font-weight:500}
+
+  /* ============ BEFORE/AFTER mondrian split for AFTER cell ============ */
+  .ba-mond{
+    display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:var(--foreground);
+    width:100%;max-width:240px;height:140px;margin-top:-12px;
+  }
+  .ba-mond .m1{grid-column:1;grid-row:1 / span 2;background:#1749ff}
+  .ba-mond .m2{grid-column:2;grid-row:1;background:#ffde59}
+  .ba-mond .m3{grid-column:2;grid-row:2;background:#0f0f0f}
+  .ba-cell.before .ba-mond{background:var(--rule)}
+  .ba-cell.before .ba-mond .m1{background:transparent;border:1px solid var(--rule-strong)}
+  .ba-cell.before .ba-mond .m2{background:transparent;border:1px solid var(--rule-strong)}
+  .ba-cell.before .ba-mond .m3{background:transparent;border:1px solid var(--rule-strong)}
+
+  /* ============ PROCESS step chips ============ */
+  .step{position:relative}
+  .chip{width:22px;height:22px;border:1px solid var(--foreground);display:inline-block;flex-shrink:0}
+  .chip.bone{background:var(--background-elev)}
+  .chip.yellow{background:#ffde59;border-color:#0f0f0f}
+  .chip.cobalt{background:#1749ff;border-color:#1749ff}
+  .chip.black{background:#0f0f0f}
+
+  /* ============ SECTION SHELL ============ */
+  .section{padding:96px 0}
+  @media(min-width:900px){.section{padding:160px 0}}
+  .section-rule{border-top:1px solid var(--rule)}
+  .section-head{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    padding-bottom:56px;
+  }
+  @media(max-width:900px){.section-head{grid-template-columns:repeat(6,minmax(0,1fr));column-gap:16px}}
+  .section-head .eyebrow{grid-column:1 / span 12;display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--foreground-mute);
+    padding-bottom:18px;border-bottom:1px solid var(--rule);margin-bottom:28px;}
+  .section-head .eyebrow .right{color:var(--foreground)}
+  .section-head h2{
+    grid-column:1 / span 8;
+    font-family:var(--font-serif);font-weight:400;font-size:clamp(32px,4.4vw,56px);line-height:1.1;letter-spacing:-0.005em;
+    text-wrap:balance;
+  }
+  .section-head .desc{
+    grid-column:9 / span 4;font-size:16px;line-height:1.6;color:var(--foreground-mute);max-width:36ch;align-self:end;
+  }
+  @media(max-width:900px){
+    .section-head h2{grid-column:1 / -1}
+    .section-head .desc{grid-column:1 / -1;margin-top:20px}
+  }
+
+  /* ============ BEFORE / AFTER ============ */
+  .beforeafter{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  @media(max-width:900px){.beforeafter{grid-template-columns:1fr;column-gap:0}}
+  .ba-cell{grid-column:span 6;padding:64px 32px 64px 0;position:relative;min-height:320px;display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+  .ba-cell.after{padding:64px 0 64px 32px;border-left:1px solid var(--rule)}
+  @media(max-width:900px){.ba-cell{grid-column:1/-1;padding:56px 0;border-bottom:1px solid var(--rule)}.ba-cell.after{padding:56px 0;border-left:0}.ba-cell:last-child{border-bottom:0}}
+  .ba-label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--foreground-mute);display:flex;justify-content:space-between;align-items:baseline}
+  .ba-label .badge{color:var(--foreground)}
+  .ba-text{font-family:var(--font-serif);font-weight:400;font-size:clamp(26px,2.8vw,34px);line-height:1.2;text-wrap:balance;max-width:22ch}
+  .ba-cell.after .ba-text{color:var(--foreground)}
+  .ba-cell.after .ba-label .badge{color:var(--signal)}
+  .ba-meta{font-family:var(--font-mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--foreground-mute)}
+
+  /* ---------- Before/After ticker ---------- */
+  .ba-ticker{
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    overflow:hidden;position:relative;height:32px;display:flex;align-items:center;
+    margin-top:8px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+  }
+  .ba-track{
+    display:flex;gap:48px;white-space:nowrap;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--foreground-mute);
+    will-change:transform;
+  }
+  .ba-track > span{flex:0 0 auto}
+  .ba-ticker.after .ba-track > span{color:var(--foreground)}
+  .ba-ticker.after .ba-track > span::before{content:"\2192 ";color:var(--signal);margin-right:6px;letter-spacing:0}
+  @media (prefers-reduced-motion: no-preference){
+    .ba-track{animation:ticker-scroll 38s linear infinite}
+    .ba-ticker.after .ba-track{animation-duration:30s}
+    @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  }
+
+  /* ============ SERVICES ============ */
+  .services-grid{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    border-top:1px solid var(--rule);
+  }
+  @media(max-width:900px){.services-grid{grid-template-columns:1fr;column-gap:0}}
+  .service{
+    grid-column:span 6;padding:48px 0 48px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:56px 1fr;gap:20px;position:relative;
+  }
+  .service:nth-child(odd){padding-right:40px}
+  .service:nth-child(even){padding-left:40px;border-left:1px solid var(--rule)}
+  @media(max-width:900px){
+    .service{grid-column:1/-1;padding:40px 0 !important;border-left:0 !important}
+  }
+  .service .num{font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;color:var(--foreground-mute);padding-top:4px}
+  .service h3{font-family:var(--font-serif);font-weight:400;font-size:28px;line-height:1.15;letter-spacing:-0.005em;text-wrap:balance}
+  .service p{margin-top:16px;font-size:16px;line-height:1.6;color:var(--foreground-mute);max-width:48ch}
+  .service .tag{margin-top:22px;display:inline-flex;gap:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute)}
+  .service .tag::before{content:"";width:14px;height:1px;background:var(--rule-strong);align-self:center}
+
+  /* ============ PROCESS ============ */
+  .process{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    border-top:1px solid var(--foreground);border-bottom:1px solid var(--rule);
+  }
+  @media(max-width:900px){.process{grid-template-columns:1fr;column-gap:0;border-bottom:0}}
+  .step{
+    grid-column:span 3;padding:36px 24px 44px 24px;border-right:1px solid var(--rule);position:relative;min-height:280px;display:flex;flex-direction:column;gap:18px;
+  }
+  .step:first-child{padding-left:0}
+  .step:last-child{border-right:0;padding-right:0}
+  @media(max-width:900px){
+    .step{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--rule);padding:32px 0;min-height:0}
+    .step:last-child{border-bottom:0}
+  }
+  .step-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute)}
+  .step-top .idx{color:var(--foreground);font-size:13px;letter-spacing:0.24em}
+  .step h3{font-family:var(--font-serif);font-weight:400;font-size:26px;line-height:1.15;margin-top:28px;text-wrap:balance}
+  .step p{margin-top:auto;font-size:14px;line-height:1.6;color:var(--foreground-mute)}
+  .step.is-ai h3::after{content:"";display:block;width:24px;height:3px;background:var(--signal);margin-top:14px}
+
+  /* ============ PROOF ============ */
+  .proof-grid{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;border-top:1px solid var(--rule);
+  }
+  @media(max-width:900px){.proof-grid{grid-template-columns:1fr;column-gap:0}}
+  .proof-left{grid-column:span 5;padding:48px 40px 48px 0;border-right:1px solid var(--rule)}
+  .proof-right{grid-column:span 7;padding:48px 0 48px 40px;display:grid;gap:0}
+  @media(max-width:900px){.proof-left{grid-column:1/-1;padding:40px 0;border-right:0;border-bottom:1px solid var(--rule)}.proof-right{grid-column:1/-1;padding:40px 0}}
+  .proof-kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--signal)}
+  .proof-title{font-family:var(--font-serif);font-weight:400;font-size:clamp(28px,3vw,38px);line-height:1.18;margin-top:20px;text-wrap:balance}
+  .proof-meta{margin-top:28px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--foreground-mute);display:grid;gap:10px}
+  .proof-meta div{display:flex;justify-content:space-between;gap:24px;padding:10px 0;border-bottom:1px solid var(--rule)}
+  .proof-meta div:last-child{border-bottom:0}
+  .proof-meta .k{color:var(--foreground-mute)}
+  .proof-meta .v{color:var(--foreground);text-align:right;letter-spacing:0.12em}
+  .proof-item{padding:28px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:72px 1fr;gap:20px}
+  .proof-item:last-child{border-bottom:0}
+  .proof-item .pi-num{font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute)}
+  .proof-item p{font-size:16px;line-height:1.6;color:var(--foreground)}
+
+  /* ============ TEAM ============ */
+  .team-grid{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;border-top:1px solid var(--rule);
+  }
+  @media(max-width:900px){.team-grid{grid-template-columns:1fr;column-gap:0}}
+  .member{grid-column:span 4;padding:40px 28px 44px 0;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:24px}
+  .member:nth-child(2){padding-left:28px}
+  .member:nth-child(3){padding-left:28px;border-right:0;padding-right:0}
+  @media(max-width:900px){
+    .member{grid-column:1/-1;padding:36px 0 !important;border-right:0;border-bottom:1px solid var(--rule)}
+    .member:last-child{border-bottom:0}
+  }
+  .portrait{
+    position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;border-radius:2px;background:var(--background-elev);
+  }
+  /* Warm duotone: grayscale → tinted via mix-blend + filter */
+  .portrait img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    filter:grayscale(1) contrast(1.02) brightness(.98);
+  }
+  .portrait::before{
+    content:"";position:absolute;inset:0;background:var(--foreground);mix-blend-mode:lighten;pointer-events:none;
+  }
+  .portrait::after{
+    content:"";position:absolute;inset:0;background:#f6edd6;mix-blend-mode:multiply;pointer-events:none;
+  }
+  .portrait .tag{
+    position:absolute;left:10px;bottom:10px;z-index:2;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#fff;
+    background:rgba(15,15,15,.85);padding:5px 8px;
+  }
+  .member .role{font-family:var(--font-mono);font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--foreground-mute);line-height:1.5}
+  .member .name{font-family:var(--font-serif);font-weight:400;font-size:30px;line-height:1.1;letter-spacing:-0.005em;margin-top:-6px}
+  .member .bio{font-size:14px;line-height:1.6;color:var(--foreground-mute)}
+
+  /* ============ FIT ============ */
+  .fit-grid{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;
+    border-top:1px solid var(--rule);
+  }
+  @media(max-width:900px){.fit-grid{grid-template-columns:1fr;column-gap:0}}
+  .fit-col{grid-column:span 6;padding:40px 32px 40px 0;border-right:1px solid var(--rule)}
+  .fit-col.not{padding:40px 0 40px 32px;border-right:0}
+  @media(max-width:900px){.fit-col{grid-column:1/-1;padding:36px 0;border-right:0;border-bottom:1px solid var(--rule)}.fit-col.not{padding:36px 0;border-bottom:0}}
+  .fit-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:16px;margin-bottom:22px;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;}
+  .fit-head .label{color:var(--foreground)}
+  .fit-col.for .fit-head .label{color:var(--signal)}
+  .fit-head .mark{color:var(--foreground-mute)}
+  .fit-list{display:grid;gap:0}
+  .fit-item{display:grid;grid-template-columns:32px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.55}
+  .fit-item:last-child{border-bottom:0}
+  .fit-item .bull{font-family:var(--font-mono);font-size:10px;letter-spacing:0.24em;color:var(--foreground-mute);padding-top:3px}
+  .fit-col.for .fit-item .bull{color:var(--signal)}
+  .fit-col.not .fit-item{color:var(--foreground-mute)}
+  .fit-col.not .fit-item .bull::before{content:"—";}
+  .fit-col.for .fit-item .bull::before{content:"+";}
+
+  /* ============ FAQ ============ */
+  .faq-list{border-top:1px solid var(--rule)}
+  details.faq{border-bottom:1px solid var(--rule);padding:0;display:block !important;width:100%}
+  .faq summary{
+    cursor:pointer;list-style:none;padding:28px 0;display:grid;grid-template-columns:72px 1fr 32px;gap:20px;align-items:baseline;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq .qidx{font-family:var(--font-mono);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute)}
+  .faq .q{font-family:var(--font-serif);font-weight:400;font-size:clamp(20px,2vw,26px);line-height:1.25;letter-spacing:-0.005em;text-wrap:balance}
+  .faq .caret{justify-self:end;font-family:var(--font-mono);font-size:14px;color:var(--foreground-mute);transition:transform .2s}
+  .faq[open] .caret{transform:rotate(45deg);color:var(--signal)}
+  .faq .a{padding:0 0 32px 92px;font-size:16px;line-height:1.65;color:var(--foreground-mute);max-width:70ch;width:auto;display:block}
+  @media(max-width:900px){.faq .a{padding-left:0}.faq summary{grid-template-columns:56px 1fr 28px}}
+
+  /* ============ CTA ============ */
+  .cta-marquee{
+    border-top:1px solid var(--foreground);border-bottom:1px solid var(--foreground);
+    background:var(--foreground);color:var(--background);
+    overflow:hidden;height:34px;display:flex;align-items:center;
+  }
+  .cta-marquee-track{
+    display:flex;gap:36px;white-space:nowrap;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.32em;text-transform:uppercase;
+    will-change:transform;
+  }
+  .cta-marquee-track > span{flex:0 0 auto;display:inline-flex;align-items:center;gap:36px}
+  .cta-marquee-track > span::after{content:"\25A0";color:var(--signal);font-size:8px}
+  @media (prefers-reduced-motion: no-preference){
+    .cta-marquee-track{animation:cta-scroll 42s linear infinite}
+    @keyframes cta-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  }
+
+  .cta-band{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;border-top:1px solid var(--foreground);
+  }
+  @media(max-width:900px){.cta-band{grid-template-columns:1fr;column-gap:0}}
+  .cta-left{grid-column:span 8;padding:72px 48px 72px 0;border-right:1px solid var(--rule)}
+  .cta-right{grid-column:span 4;padding:72px 0 72px 48px;display:flex;flex-direction:column;gap:22px;justify-content:space-between}
+  @media(max-width:900px){.cta-left{grid-column:1/-1;padding:56px 0;border-right:0;border-bottom:1px solid var(--rule)}.cta-right{grid-column:1/-1;padding:48px 0}}
+  .cta-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--signal)}
+  .cta-headline{font-family:var(--font-serif);font-weight:400;font-size:clamp(36px,5.2vw,68px);line-height:1.08;margin-top:24px;letter-spacing:-0.005em;text-wrap:balance}
+  .cta-email-row{display:flex;flex-direction:column;gap:14px}
+  .cta-email{display:inline-flex;align-items:center;justify-content:space-between;border:1px solid var(--foreground);padding:16px 20px;font-family:var(--font-mono);font-size:13px;letter-spacing:0.12em;color:var(--foreground);transition:background .2s,color .2s}
+  .cta-email:hover{background:var(--foreground);color:#f5eded}
+  .cta-email .glyph{font-family:var(--font-mono);font-size:12px;color:var(--foreground-mute)}
+  .cta-email:hover .glyph{color:#f5eded}
+  .cta-note2{font-size:13px;line-height:1.55;color:var(--foreground-mute);padding-top:18px;border-top:1px solid var(--rule)}
+  .cta-kv{display:grid;gap:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--foreground-mute);padding-top:18px;border-top:1px solid var(--rule)}
+  .cta-kv div{display:flex;justify-content:space-between;gap:18px}
+  .cta-kv .v{color:var(--foreground);text-align:right}
+
+  /* ============ FOOTER ============ */
+  .footer{border-top:1px solid var(--foreground);background:var(--background)}
+  .footer-inner{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding:48px 0 32px}
+  @media(max-width:900px){.footer-inner{grid-template-columns:1fr;column-gap:0;gap:32px}}
+  .footer-brand{grid-column:span 5}
+  .footer-brand .mark{font-family:var(--font-serif);font-size:32px;letter-spacing:-0.01em}
+  .footer-brand .tag{margin-top:14px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);max-width:36ch;line-height:1.7}
+  .footer-nav{grid-column:span 4;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--foreground-mute)}
+  .footer-nav a{position:relative}
+  .footer-nav a:hover{color:var(--foreground)}
+  .footer-contact{grid-column:span 3;display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--foreground-mute);text-align:left}
+  @media(min-width:900px){.footer-contact{text-align:right;align-items:flex-end}}
+  .footer-contact a{color:var(--foreground)}
+  .footer-legal{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-top:1px solid var(--rule);font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute)}
+  .footer-legal .right{display:flex;gap:22px}
+  .footer-legal .bar{color:var(--foreground)}
+
+  /* ensure the hero left col has space to breathe below */
+  .hero-left{padding-right:8px}
+  @media(min-width:900px){.hero-left{padding-right:16px}}
+
+  /* subtle top-left signature */
+  .sheet-sig{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--foreground-mute);
+    padding:14px 0 0;
+  }
+  .sheet-sig .right{color:var(--foreground);white-space:nowrap}
+  .sheet-sig span{white-space:nowrap}
+
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <span class="brand-mark">GameChanger AI</span>
+        <span class="brand-sub">Est. 2025 · Vancouver / Santa Cruz / Medellín</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="#services">Services</a>
+        <a class="nav-link" href="#process">Process</a>
+        <a class="nav-link" href="#team">Team</a>
+        <a class="nav-link" href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-primary" href="#cta"><span class="dot"></span>Book a session</a>
+    </div>
+  </header>
+
+  <!-- HERO SHEET -->
+  <section class="container" aria-label="Hero">
+
+    <!-- Sheet signature -->
+    <div class="sheet-sig">
+      <span>Sheet 01 / Homepage</span>
+      <span class="right">Fig. 01 — Where AI fits</span>
+    </div>
+
+    <!-- Top ruled edge with column numbers -->
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div>
+      <div class="cell"><span class="num">02</span></div>
+      <div class="cell"><span class="num">03</span></div>
+      <div class="cell"><span class="num">04</span></div>
+      <div class="cell"><span class="num">05</span></div>
+      <div class="cell"><span class="num">06</span></div>
+      <div class="cell"><span class="num">07</span></div>
+      <div class="cell"><span class="num">08</span></div>
+      <div class="cell"><span class="num">09</span></div>
+      <div class="cell"><span class="num">10</span></div>
+      <div class="cell"><span class="num">11</span></div>
+      <div class="cell"><span class="num">12</span></div>
+    </div>
+
+    <div class="ruled-surface">
+      <div class="ruled">
+        <!-- LEFT: headline -->
+        <div class="c-1-7 hero-left">
+          <span class="kicker">Built for operators in the real world</span>
+          <h1 class="hero">AI that works inside the business you already have.</h1>
+          <p class="hero-lede">
+            We audit operations, redesign workflows, and implement practical AI tools — without pretending the old systems, approval chains, and operational constraints do not exist.
+          </p>
+
+          <dl class="hero-meta">
+            <dt>Practice</dt><dd>Audit · Redesign · Implementation</dd>
+            <dt>Engagement</dt><dd>2–4 weeks to audit &amp; roadmap</dd>
+            <dt>Sector</dt><dd>Mid-market · Legacy operations · 50–500 FTE</dd>
+          </dl>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#cta">Book the working session →</a>
+            <a class="btn btn-ghost" href="#services">What we do ↓</a>
+            <span class="cta-note">No decks. No retainers to watch.</span>
+          </div>
+
+          <div class="plate" aria-hidden="true">
+            <div class="mond">
+              <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div><div class="b5"></div>
+            </div>
+            <div class="plate-cap">
+              <b>Plate 00</b><br/>
+              Composition in<br/>
+              signal · highlight · warn
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: diagram -->
+        <div class="c-8-12">
+          <figure class="diagram" aria-label="Operating diagram — where AI fits">
+            <figcaption class="diagram-header">
+              <span class="left">Fig. 01</span>
+              <span>Operating Diagram · v. <span id="diagram-date">2026.04</span> · <span class="live-dot" style="color:var(--signal)">● LIVE</span></span>
+            </figcaption>
+
+            <div class="diagram-body diagram-inner">
+
+              <!-- ROW 1 — INTAKE -->
+              <div class="row" data-row="intake">
+                <div class="row-label"><span class="tick"></span>Intake</div>
+                <div class="track">
+                  <div class="node"><span class="idx">01</span>email</div>
+                  <div class="conn"></div>
+                  <div class="node"><span class="idx">02</span>ticket</div>
+                  <div class="conn"></div>
+                  <div class="node"><span class="idx">03</span>sheet</div>
+                </div>
+              </div>
+
+              <!-- ROW 2 — DECISION (with cobalt AI in middle) -->
+              <div class="row decision" data-row="decision">
+                <div class="row-label"><span class="tick"></span>Decision</div>
+                <div class="track decision">
+                  <div class="node"><span class="idx">04</span>triage</div>
+                  <div class="conn is-ai-in"></div>
+                  <div class="node is-ai" id="ai-node"><span class="idx">AI</span>AI</div>
+                  <div class="conn is-ai-out"></div>
+                  <div class="node"><span class="idx">05</span>approve</div>
+                  <span class="vconn up" aria-hidden="true"></span>
+                  <span class="vconn down" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <!-- ROW 3 — OUTPUT -->
+              <div class="row" data-row="output">
+                <div class="row-label"><span class="tick"></span>Output</div>
+                <div class="track">
+                  <div class="node"><span class="idx">06</span>dispatch</div>
+                  <div class="conn"></div>
+                  <div class="node"><span class="idx">07</span>reply</div>
+                  <div class="conn"></div>
+                  <div class="node"><span class="idx">08</span>export</div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="diagram-caption">
+              <span class="lead">Fig. 01 — Where AI fits</span>
+              <span>1 of 1 · not to scale</span>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom ruled edge -->
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div>
+      <div class="cell"><span class="num">02</span></div>
+      <div class="cell"><span class="num">03</span></div>
+      <div class="cell"><span class="num">04</span></div>
+      <div class="cell"><span class="num">05</span></div>
+      <div class="cell"><span class="num">06</span></div>
+      <div class="cell"><span class="num">07</span></div>
+      <div class="cell"><span class="num">08</span></div>
+      <div class="cell"><span class="num">09</span></div>
+      <div class="cell"><span class="num">10</span></div>
+      <div class="cell"><span class="num">11</span></div>
+      <div class="cell"><span class="num">12</span></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-wrap">
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div style="height:96px"></div>
+  </section>
+
+  <!-- ============ BEFORE / AFTER ============ -->
+  <section class="container section-rule" aria-label="Before and After">
+    <div class="sheet-sig">
+      <span>Sheet 02 / Before &amp; After</span>
+      <span class="right">Fig. 02 — State change</span>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+
+    <div class="beforeafter">
+      <div class="ba-cell before">
+        <div class="ba-label"><span>Before</span><span class="badge">State 01</span></div>
+        <p class="ba-text">Smart people, patchwork processes, and old systems nobody wants to touch.</p>
+        <div class="ba-mond" aria-hidden="true"><div class="m1"></div><div class="m2"></div><div class="m3"></div></div>
+        <div class="ba-ticker" aria-hidden="true"><div class="ba-track">
+          <span>INV-4471 · waiting on approval</span><span>RFQ-228 · forwarded → inbox</span><span>SO-1183 · stuck in spreadsheet v14</span><span>TICKET-9920 · reassigned 3x</span><span>BATCH-204 · manual reconcile</span><span>INV-4472 · awaiting CFO sign-off</span>
+          <span>INV-4471 · waiting on approval</span><span>RFQ-228 · forwarded → inbox</span><span>SO-1183 · stuck in spreadsheet v14</span><span>TICKET-9920 · reassigned 3x</span><span>BATCH-204 · manual reconcile</span><span>INV-4472 · awaiting CFO sign-off</span>
+        </div></div>
+        <div class="ba-meta">Spreadsheets · Inboxes · Tribal knowledge</div>
+      </div>
+      <div class="ba-cell after">
+        <div class="ba-label"><span>After</span><span class="badge">State 02</span></div>
+        <p class="ba-text">Clear workflows, useful internal AI tools, and adoption that survives contact with daily operations.</p>
+        <div class="ba-mond" aria-hidden="true"><div class="m1"></div><div class="m2"></div><div class="m3"></div></div>
+        <div class="ba-ticker after" aria-hidden="true"><div class="ba-track">
+          <span>INV-4471 · auto-routed → JD</span><span>RFQ-228 · drafted → sent</span><span>SO-1183 · reconciled ✓</span><span>TICKET-9920 · triaged in 4s</span><span>BATCH-204 · closed by op</span><span>INV-4472 · approved by rule</span>
+          <span>INV-4471 · auto-routed → JD</span><span>RFQ-228 · drafted → sent</span><span>SO-1183 · reconciled ✓</span><span>TICKET-9920 · triaged in 4s</span><span>BATCH-204 · closed by op</span><span>INV-4472 · approved by rule</span>
+        </div></div>
+        <div class="ba-meta">Audit · Redesign · Implement · Adopt</div>
+      </div>
+    </div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="container section" aria-label="Services">
+    <div class="section-head">
+      <div class="eyebrow"><span>Services · Sheet 03</span><span class="right">§ 03</span></div>
+      <h2>What we do when AI needs to fit the operation, not the keynote.</h2>
+      <p class="desc">Audit, redesign, and implementation support for companies that cannot afford generic advice or brittle automation.</p>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="services-grid" id="services-grid"></div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section id="process" class="container section section-rule" aria-label="Process">
+    <div class="section-head">
+      <div class="eyebrow"><span>Process · Sheet 04</span><span class="right">§ 04</span></div>
+      <h2>A practical sequence from audit to adoption.</h2>
+      <p class="desc">We work in deliberate passes so the implementation fits the business instead of turning into another stalled initiative.</p>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="process" id="process-grid"></div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ TEAM ============ -->
+  <section id="team" class="container section section-rule" aria-label="Team">
+    <div class="section-head">
+      <div class="eyebrow"><span>Team · Sheet 05</span><span class="right">§ 05</span></div>
+      <h2>A small team that thinks commercially and executes inside messy operations.</h2>
+      <p class="desc">No strategy handoff circus. The people shaping the approach are the same people close to the systems and the implementation.</p>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="team-grid" id="team-grid"></div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ FIT ============ -->
+  <section id="fit" class="container section section-rule" aria-label="Fit">
+    <div class="section-head">
+      <div class="eyebrow"><span>Fit · Sheet 06</span><span class="right">§ 06</span></div>
+      <h2>Who this is for, and who should skip it.</h2>
+      <p class="desc">The work goes best when leadership wants practical leverage, not a cosmetic AI story for the website.</p>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="fit-grid">
+      <div class="fit-col for">
+        <div class="fit-head"><span class="label">For</span><span class="mark">06.A</span></div>
+        <ul class="fit-list" id="fit-for"></ul>
+      </div>
+      <div class="fit-col not">
+        <div class="fit-head"><span class="label">Not for</span><span class="mark">06.B</span></div>
+        <ul class="fit-list" id="fit-not"></ul>
+      </div>
+    </div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq" class="container section section-rule" aria-label="FAQ">
+    <div class="section-head">
+      <div class="eyebrow"><span>FAQ · Sheet 07</span><span class="right">§ 07</span></div>
+      <h2>Straight answers.</h2>
+      <p class="desc">Short version: we help companies make AI useful inside the operational reality they already have.</p>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="cta" class="container section" aria-label="Get started">
+    <div class="sheet-sig">
+      <span>Sheet 08 / Contact</span>
+      <span class="right">Fig. 08 — Next step</span>
+    </div>
+    <div class="rule-edge top" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+    <div class="cta-marquee" aria-hidden="true">
+      <div class="cta-marquee-track">
+        <span>Booking · Q2 2026</span><span>3 slots open</span><span>Next start · WK 18</span><span>Vancouver</span><span>Santa Cruz</span><span>Medellín</span><span>Working sessions only</span><span>No retainers</span>
+        <span>Booking · Q2 2026</span><span>3 slots open</span><span>Next start · WK 18</span><span>Vancouver</span><span>Santa Cruz</span><span>Medellín</span><span>Working sessions only</span><span>No retainers</span>
+      </div>
+    </div>
+    <div class="cta-band">
+      <div class="cta-left">
+        <div class="cta-eyebrow">Get started</div>
+        <h2 class="cta-headline">If AI sounds promising but your operation is full of edge cases, that is exactly where we work.</h2>
+      </div>
+      <div class="cta-right">
+        <div class="cta-email-row">
+          <a class="cta-email" href="/cdn-cgi/l/email-protection#a8c0cdc4c4c7e8cfc9c5cdcbc0c9c6cfcdda86c9c1">
+            <span><span class="__cf_email__" data-cfemail="5e363b3232311e393f333b3d363f30393b2c703f37">[email&#160;protected]</span></span><span class="glyph">↗</span>
+          </a>
+          <a class="cta-email" href="#">
+            <span>Schedule intro call</span><span class="glyph">→</span>
+          </a>
+          <p class="cta-note2">Book a working session. We review the current workflow, the system constraints, and the best first use cases.</p>
+        </div>
+        <div class="cta-kv">
+          <div><span class="k">Response</span><span class="v">Within 2 business days</span></div>
+          <div><span class="k">Intro call</span><span class="v">45 minutes</span></div>
+          <div><span class="k">Scope</span><span class="v">2–4 week audit</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="rule-edge bottom" aria-hidden="true">
+      <div class="cell"><span class="num">01</span></div><div class="cell"><span class="num">02</span></div><div class="cell"><span class="num">03</span></div><div class="cell"><span class="num">04</span></div><div class="cell"><span class="num">05</span></div><div class="cell"><span class="num">06</span></div><div class="cell"><span class="num">07</span></div><div class="cell"><span class="num">08</span></div><div class="cell"><span class="num">09</span></div><div class="cell"><span class="num">10</span></div><div class="cell"><span class="num">11</span></div><div class="cell"><span class="num">12</span></div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="mark">GameChanger AI</div>
+          <div class="tag">Boutique AI consultancy for companies running on legacy systems, spreadsheets, and tribal knowledge.</div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+          <a href="#team">Team</a>
+          <a href="#fit">Fit</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="footer-contact">
+          <a href="/cdn-cgi/l/email-protection#5b333e3737341b3c3a363e38333a353c3e29753a32"><span class="__cf_email__" data-cfemail="c5ada0a9a9aa85a2a4a8a0a6ada4aba2a0b7eba4ac">[email&#160;protected]</span></a>
+          <span>Vancouver<br>Santa Cruz<br>Medellín</span>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <span class="bar">© 2026 GameChanger AI</span>
+        <span class="right"><span>Est. 2025</span><span>Homepage · v. 2026.04</span></span>
+      </div>
+    </div>
+  </footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Live diagram date — current year.month
+  (function(){
+    const el = document.getElementById('diagram-date');
+    if(!el) return;
+    const d = new Date();
+    el.textContent = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0');
+  })();
+
+  // Content (mirrors src/content/site.ts)
+  const heroStats = [
+    { value: "2–4", unit:"weeks", label: "to complete an AI audit and implementation roadmap" },
+    { value: "0", unit:"", label: "appetite for rip-and-replace transformation theatre" },
+    { value: "1", unit:"team", label: "that audits, redesigns, and helps implement — no handoff circus" },
+  ];
+  const services = [
+    { title:"AI audits grounded in operational reality", description:"We map how work actually moves across teams, spreadsheets, inboxes, and old systems, then identify where AI can remove drag without breaking the business.", tag:"Audit" },
+    { title:"Workflow redesign for constrained environments", description:"Most companies do not get to start clean. We redesign approvals, handoffs, reporting, and repetitive tasks around the systems you already depend on.", tag:"Redesign" },
+    { title:"Practical implementation, not strategy decks", description:"We help scope and stand up the first useful layer — internal copilots, automations, operator tools — so adoption starts with real work instead of a keynote.", tag:"Implement" },
+    { title:"Internal AI tools your team will actually use", description:"Knowledge assistants, triage workflows, quoting helpers, reporting tools, and decision support, built for the messy conditions of day-to-day operations.", tag:"Adopt" },
+  ];
+  const processSteps = [
+    { index:"01", title:"Audit the current mess", description:"We review workflows, system dependencies, bottlenecks, and failure points so the AI plan starts from operational truth, not wishful thinking." },
+    { index:"02", title:"Redesign the workflow", description:"We simplify the path first, then decide where AI, automation, or human review belong. Bad process does not become good because you glued AI on top." },
+    { index:"03", title:"Implement the useful layer", description:"We define the first internal tools, integrations, and decision loops that can go live without forcing a full platform rebuild.", ai:true },
+    { index:"04", title:"Drive adoption", description:"We tighten prompts, interfaces, and operating rules around real usage so the system becomes part of the work instead of shelfware." },
+  ];
+  const team = [
+    { name:"Marc Snegg", role:"Commercial strategy · North America relationships", bio:"Brings business judgment, commercial clarity, and a strong operating network across North America to keep the work tied to real decisions, real buyers, and real constraints.", img:"assets/marc.png" },
+    { name:"JP Domínguez", role:"Systems · Workflow redesign · Implementation", bio:"Translates operational complexity into workable AI systems, with a bias toward legacy environments, practical rollout, and tools that survive contact with the day-to-day business.", img:"assets/jp.png" },
+    { name:"Juan Trujillo", role:"Internal tools · Automation · Delivery", bio:"Focuses on turning the redesign into usable internal products, from workflow automation to team-facing AI tools that reduce manual work without adding another layer of chaos.", img:"assets/truji.png" },
+  ];
+  const fit = {
+    for: [
+      "Companies running on legacy systems, spreadsheets, inboxes, and tribal knowledge",
+      "Operators who need AI to improve throughput, visibility, or response time inside real constraints",
+      "Teams that want an implementation path their staff can actually adopt",
+    ],
+    notFor: [
+      "Companies shopping for generic AI branding, trend-chasing, or chatbot wallpaper",
+      "Leadership teams that want a slide deck instead of workflow change",
+      "Anyone expecting AI to fix a broken business without operational ownership",
+    ],
+  };
+  const faqs = [
+    { question:"What do you actually do?", answer:"We audit operations, redesign workflows, identify where AI belongs, and help implement the first useful tools. That can include internal copilots, intake flows, reporting layers, and automations tied to existing systems." },
+    { question:"Do you replace our current software stack?", answer:"Usually no. The point is to work with operational reality. We look for the shortest path to leverage inside the systems your team already relies on." },
+    { question:"What kinds of companies are a fit?", answer:"Teams with real operating complexity, legacy processes, and pressure to move faster without blowing up compliance, handoffs, or service quality." },
+    { question:"How do you handle adoption?", answer:"By keeping the first implementation narrow, useful, and tied to existing roles. If the tool does not save time or improve decisions inside the actual workflow, it does not count." },
+  ];
+
+  // ----- STATS -----
+  const stats = document.getElementById('stats');
+  heroStats.forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className = 'stat ' + (i===0?'first':i===heroStats.length-1?'last':'mid');
+    el.innerHTML = `
+      <div class="label-top"><span>Metric ${String(i+1).padStart(2,'0')}</span><span>${i===0?'Timeline':i===1?'Methodology':'Team'}</span></div>
+      <div class="value">${s.value}${s.unit?`<span class="unit">${s.unit}</span>`:''}</div>
+      <div class="desc">${s.label}</div>`;
+    stats.appendChild(el);
+  });
+
+  // ----- SERVICES -----
+  const sg = document.getElementById('services-grid');
+  services.forEach((s,i)=>{
+    const a = document.createElement('article');
+    a.className = 'service';
+    a.innerHTML = `
+      <div class="num">0${i+1}</div>
+      <div>
+        <h3>${s.title}</h3>
+        <p>${s.description}</p>
+        <span class="tag">${s.tag}</span>
+      </div>`;
+    sg.appendChild(a);
+  });
+
+  // ----- PROCESS -----
+  const pg = document.getElementById('process-grid');
+  const chipColors = ['bone','yellow','cobalt','black'];
+  processSteps.forEach((s,i)=>{
+    const a = document.createElement('article');
+    a.className = 'step' + (s.ai?' is-ai':'');
+    a.innerHTML = `
+      <div class="step-top"><span class="idx">${s.index}</span><span class="chip ${chipColors[i]}" aria-hidden="true"></span></div>
+      <h3>${s.title}</h3>
+      <p>${s.description}</p>`;
+    pg.appendChild(a);
+  });
+
+  // ----- TEAM -----
+  const tg = document.getElementById('team-grid');
+  team.forEach((m,i)=>{
+    const el = document.createElement('article');
+    el.className = 'member';
+    el.innerHTML = `
+      <div class="portrait">
+        <img src="${m.img}" alt="${m.name}" loading="lazy" />
+        <span class="tag">Plate 06.${String.fromCharCode(65+i)}</span>
+      </div>
+      <div class="role">${m.role}</div>
+      <div class="name">${m.name}</div>
+      <div class="bio">${m.bio}</div>`;
+    tg.appendChild(el);
+  });
+
+  // ----- FIT -----
+  const ff = document.getElementById('fit-for');
+  fit.for.forEach((t,i)=>{
+    const li = document.createElement('li');
+    li.className='fit-item';
+    li.innerHTML = `<span class="bull"></span><span>${t}</span>`;
+    ff.appendChild(li);
+  });
+  const fn = document.getElementById('fit-not');
+  fit.notFor.forEach((t,i)=>{
+    const li = document.createElement('li');
+    li.className='fit-item';
+    li.innerHTML = `<span class="bull"></span><span>${t}</span>`;
+    fn.appendChild(li);
+  });
+
+  // ----- FAQ -----
+  const fl = document.getElementById('faq-list');
+  faqs.forEach((f,i)=>{
+    const d = document.createElement('details');
+    d.className = 'faq';
+    if(i===0) d.setAttribute('open','');
+    d.innerHTML = `
+      <summary>
+        <span class="qidx">Q.${String(i+1).padStart(2,'0')}</span>
+        <span class="q">${f.question}</span>
+        <span class="caret">+</span>
+      </summary>
+      <div class="a">${f.answer}</div>`;
+    fl.appendChild(d);
+  });
+</script>
+</body>
+</html>
