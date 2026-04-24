@@ -1,93 +1,151 @@
+export const site = {
+  brand: "GameChanger AI",
+  established: "Est. 2025 · Vancouver / Santa Cruz / Medellín",
+  positioning:
+    "Boutique AI consultancy helping operators turn today's tools into measurable business wins.",
+  email: "hello@gamechanger.ai",
+  cities: ["Vancouver", "Santa Cruz", "Medellín"],
+  nav: [
+    { label: "Services", href: "#services" },
+    { label: "Process", href: "#process" },
+    { label: "Team", href: "#team" },
+    { label: "FAQ", href: "#faq" },
+  ],
+  footerNav: [
+    { label: "Services", href: "#services" },
+    { label: "Process", href: "#process" },
+    { label: "Team", href: "#team" },
+    { label: "Fit", href: "#fit" },
+    { label: "FAQ", href: "#faq" },
+  ],
+};
+
+export const hero = {
+  kicker: "Visionary, but practical",
+  headline: "AI that makes your business measurably better — this quarter, not someday.",
+  lede: "What's possible today wasn't possible two weeks ago. We partner with operators to turn this moment into wins across your processes, your people, your communications, and your customers — shipped in weeks, not quarters.",
+  meta: [
+    { term: "Practice", detail: "Audit · Design · Implementation" },
+    { term: "Engagement", detail: "2–4 weeks from kickoff to a working prototype" },
+    { term: "Sector", detail: "Mid-market · Legacy operations · 50–500 FTE" },
+  ],
+  primaryCta: { label: "Book the working session →", href: "#cta" },
+  secondaryCta: { label: "What we do ↓", href: "#services" },
+  ctaNote: "Working sessions that ship real prototypes.",
+};
+
 export const heroStats = [
-  { value: "2-4w", label: "to complete an AI audit and implementation roadmap" },
-  { value: "0", label: "appetite for rip-and-replace transformation theatre" },
-  { value: "1", label: "team that audits, redesigns, and helps implement" },
+  {
+    value: "2–4",
+    unit: "weeks",
+    label: "from kickoff to a working prototype your team can use",
+    kind: "Velocity",
+  },
+  {
+    value: "1",
+    unit: "team",
+    label: "that maps, designs, and ships alongside yours — one team, end to end",
+    kind: "Team",
+  },
+  {
+    value: "Now",
+    unit: "",
+    label: "the window to turn AI into compounding wins is wide open",
+    kind: "Moment",
+  },
 ];
 
 export const services = [
   {
-    title: "AI audits grounded in operational reality",
+    title: "AI audits that surface the highest-leverage wins",
     description:
-      "We map how work actually moves across teams, spreadsheets, inboxes, and old systems, then identify where AI can remove drag without breaking the business.",
+      "We map how work really flows through your people, systems, and customer moments — then pinpoint where AI creates speed, sharper decisions, and experiences that dazzle the people you serve.",
+    tag: "Audit",
   },
   {
-    title: "Workflow redesign for constrained environments",
+    title: "Workflow design that respects the stack you already run",
     description:
-      "Most companies do not get to start clean. We redesign approvals, handoffs, reporting, and repetitive tasks around the systems you already depend on.",
+      "We design around the tools, data, and teams already in place, so wins compound instead of triggering another platform rebuild. Visionary ambition, practical rollout.",
+    tag: "Design",
   },
   {
-    title: "Practical implementation, not strategy decks",
+    title: "Working software in the time it takes to prepare a deck",
     description:
-      "We help scope and stand up the first useful layer, from internal copilots to automations and operator tools, so adoption starts with real work instead of a keynote.",
+      "The feedback loop now moves at the speed of the technology. We scope, prototype, and ship useful internal tools fast — so you learn from real usage instead of slides.",
+    tag: "Implement",
   },
   {
-    title: "Internal AI tools your team will actually use",
+    title: "Internal AI tools your team will reach for every day",
     description:
-      "Knowledge assistants, triage workflows, quoting helpers, reporting tools, and decision support, built for the messy conditions of day-to-day operations.",
+      "Copilots, knowledge assistants, intake flows, quoting helpers, reporting layers, and decision support — built to feel like leverage across your processes, your people, your communications, and your customers.",
+    tag: "Adopt",
   },
 ];
 
 export const processSteps = [
   {
     index: "01",
-    title: "Audit the current mess",
+    title: "Map the landscape",
     description:
-      "We review workflows, system dependencies, bottlenecks, and failure points so the AI plan starts from operational truth, not wishful thinking.",
+      "We study the people, workflows, and systems in play to find the moments where AI can create the biggest lift — commercial, operational, and experiential.",
+    chip: "bone" as const,
   },
   {
     index: "02",
-    title: "Redesign the workflow",
+    title: "Design the path",
     description:
-      "We simplify the path first, then decide where AI, automation, or human review belong. Bad process does not become good because you glued AI on top.",
+      "We simplify the workflow, choose the right AI surfaces, and sequence the work so momentum builds from week one — on top of the systems you already rely on.",
+    chip: "yellow" as const,
   },
   {
     index: "03",
-    title: "Implement the useful layer",
+    title: "Ship the useful layer",
     description:
-      "We define the first internal tools, integrations, and decision loops that can go live without forcing a full platform rebuild.",
+      "In weeks, not quarters, we stand up prototypes your team can actually use — tied to real data, real decisions, and real customer moments.",
+    chip: "cobalt" as const,
+    ai: true,
   },
   {
     index: "04",
-    title: "Drive adoption",
+    title: "Grow adoption, compound wins",
     description:
-      "We tighten prompts, interfaces, and operating rules around real usage so the system becomes part of the work instead of shelfware.",
+      "We tune prompts, interfaces, and operating rhythms around real usage, so AI becomes part of the work and every process, person, and customer feels the leverage.",
+    chip: "black" as const,
   },
-];
-
-export const proofItems = [
-  "Use cases can include quoting, intake, research, reporting, internal knowledge access, and repetitive coordination across teams.",
-  "Case studies and named examples should be added only after client approval and factual review.",
-  "The current site is intentionally structured to support practical proof, not inflated claims or placeholder metrics.",
 ];
 
 export const team = [
   {
     name: "Marc Snegg",
-    role: "Commercial strategy and North America relationships",
-    bio: "Brings business judgment, commercial clarity, and a strong operating network across North America to keep the work tied to real decisions, real buyers, and real constraints.",
+    role: "Commercial strategy · North America relationships",
+    bio: "Brings business judgment, commercial clarity, and a strong operating network across North America, keeping the work tied to real decisions, real buyers, and measurable outcomes.",
+    img: undefined as string | undefined,
   },
   {
     name: "JP Domínguez",
-    role: "Systems, workflow redesign, and implementation",
-    bio: "Translates operational complexity into workable AI systems, with a bias toward legacy environments, practical rollout, and tools that survive contact with the day-to-day business.",
+    role: "Systems · Workflow design · Implementation",
+    bio: "Translates operational complexity into AI systems that make businesses measurably faster, sharper, and more delightful to interact with — with a bias toward legacy environments and practical rollout.",
+    img: undefined as string | undefined,
   },
   {
     name: "Juan Trujillo",
-    role: "Internal tools, automation, and delivery",
-    bio: "Focuses on turning the redesign into usable internal products, from workflow automation to team-facing AI tools that reduce manual work without adding another layer of chaos.",
+    role: "Internal tools · Automation · Delivery",
+    bio: "Turns designs into internal products people love to use — automations and AI tools that give teams back hours and customers a noticeably smoother experience.",
+    img: undefined as string | undefined,
   },
 ];
 
 export const fit = {
   for: [
-    "Companies running on legacy systems, spreadsheets, inboxes, and tribal knowledge",
-    "Operators who need AI to improve throughput, visibility, or response time inside real constraints",
-    "Teams that want an implementation path their staff can actually adopt",
+    "Operators ready to turn this moment into measurable business wins",
+    "Teams with real data, real customers, and real constraints — not greenfield fantasy",
+    "Leaders who want visionary ambition paired with practical, weekly rollout",
   ],
-  notFor: [
-    "Companies shopping for generic AI branding, trend-chasing, or chatbot wallpaper",
-    "Leadership teams that want a slide deck instead of workflow change",
-    "Anyone expecting AI to fix a broken business without operational ownership",
+  wins: [
+    "Processes that move faster with less friction",
+    "Customers who notice the difference in speed, polish, and responsiveness",
+    "Teams that feel more powerful because the tools finally fit the work",
+    "Compounding leverage as AI gets woven deeper into daily operations",
   ],
 };
 
@@ -95,21 +153,105 @@ export const faqs = [
   {
     question: "What do you actually do?",
     answer:
-      "We audit operations, redesign workflows, identify where AI belongs, and help implement the first useful tools. That can include internal copilots, intake flows, reporting layers, and automations tied to existing systems.",
+      "We partner with operators to audit, design, and ship AI that creates real business wins — internal copilots, intake flows, reporting layers, automations, and customer-facing experiences that feel like magic against the systems you already run.",
   },
   {
     question: "Do you replace our current software stack?",
     answer:
-      "Usually no. The point is to work with operational reality. We look for the shortest path to leverage inside the systems your team already relies on.",
+      "Almost never. The biggest wins usually come from making the systems and data you already rely on sharper, faster, and smarter — then weaving AI in where the leverage is obvious.",
   },
   {
     question: "What kinds of companies are a fit?",
     answer:
-      "Teams with real operating complexity, legacy processes, and pressure to move faster without blowing up compliance, handoffs, or service quality.",
+      "Businesses ready to move while the window is wide open — more throughput, better customer experience, stronger teams. If you're excited about what's suddenly possible, we'll build it with you.",
   },
   {
     question: "How do you handle adoption?",
     answer:
-      "By keeping the first implementation narrow, useful, and tied to existing roles. If the tool does not save time or improve decisions inside the actual workflow, it does not count.",
+      "By shipping tools people genuinely want to use. When software saves time, sharpens decisions, or delights a customer, adoption takes care of itself and the wins compound from there.",
   },
 ];
+
+export const beforeAfter = {
+  before: {
+    label: "State 01",
+    text: "Talented teams, legacy systems, and inefficiencies everyone can feel but no one has time to rethink.",
+    meta: "Spreadsheets · Inboxes · Tribal knowledge",
+    ticker: [
+      "INV-4471 · waiting on approval",
+      "RFQ-228 · forwarded → inbox",
+      "SO-1183 · stuck in spreadsheet v14",
+      "TICKET-9920 · reassigned 3x",
+      "BATCH-204 · manual reconcile",
+      "INV-4472 · awaiting CFO sign-off",
+    ],
+  },
+  after: {
+    label: "State 02",
+    text: "Dazzling customer experiences, faster workflows, and teams that feel more powerful — AI woven into daily operations.",
+    meta: "Map · Design · Ship · Compound",
+    ticker: [
+      "INV-4471 · auto-routed → JD",
+      "RFQ-228 · drafted → sent",
+      "SO-1183 · reconciled",
+      "TICKET-9920 · triaged in 4s",
+      "BATCH-204 · closed by op",
+      "INV-4472 · approved by rule",
+    ],
+  },
+};
+
+export const diagram = {
+  rows: [
+    {
+      key: "intake",
+      label: "Intake",
+      nodes: [
+        { idx: "01", label: "email" },
+        { idx: "02", label: "ticket" },
+        { idx: "03", label: "sheet" },
+      ],
+    },
+    {
+      key: "decision",
+      label: "Decision",
+      nodes: [
+        { idx: "04", label: "triage" },
+        { idx: "AI", label: "AI", ai: true },
+        { idx: "05", label: "approve" },
+      ],
+    },
+    {
+      key: "output",
+      label: "Output",
+      nodes: [
+        { idx: "06", label: "dispatch" },
+        { idx: "07", label: "reply" },
+        { idx: "08", label: "export" },
+      ],
+    },
+  ],
+};
+
+export const marquee = [
+  "Booking · Q2 2026",
+  "3 slots open",
+  "Next start · WK 18",
+  "Vancouver",
+  "Santa Cruz",
+  "Medellín",
+  "Working sessions",
+  "Prototypes in weeks",
+];
+
+export const cta = {
+  eyebrow: "Get started",
+  headline:
+    "What's possible today wasn't possible two weeks ago. Let's turn that into measurable wins for your business.",
+  note: "Book a working session. We'll map the highest-leverage wins, design the path, and sketch the first prototype together.",
+  kv: [
+    { k: "Response", v: "Within 2 business days" },
+    { k: "Intro call", v: "45 minutes" },
+    { k: "Scope", v: "2–4 week audit" },
+  ],
+};

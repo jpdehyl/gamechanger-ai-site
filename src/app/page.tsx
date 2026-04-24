@@ -1,305 +1,548 @@
-import { SectionHeading } from "@/components/section-heading";
+import { Fragment } from "react";
 import {
+  beforeAfter,
+  cta,
+  diagram,
   faqs,
   fit,
+  hero,
   heroStats,
+  marquee,
   processSteps,
-  proofItems,
   services,
+  site,
   team,
 } from "@/content/site";
 
-export default function Home() {
+function RuleEdge({ variant }: { variant: "top" | "bottom" }) {
   return (
-    <main className="bg-[#f5f2ea] text-black">
+    <div className={`rule-edge ${variant}`} aria-hidden="true">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div className="cell" key={i}>
+          <span className="num">{String(i + 1).padStart(2, "0")}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-black/10 bg-[#f5f2ea]/90 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
-          <span className="text-sm font-medium tracking-wide text-black">GameChanger AI</span>
-          <a
-            href="#cta"
-            className="rounded-full border border-black bg-black px-5 py-2 text-xs font-medium transition-colors hover:bg-black/80 text-[#f0ebeb]"
-          >
+function Ticker({
+  items,
+  after = false,
+}: {
+  items: readonly string[];
+  after?: boolean;
+}) {
+  const doubled = [...items, ...items];
+  return (
+    <div className={`ba-ticker${after ? " after" : ""}`} aria-hidden="true">
+      <div className="ba-track">
+        {doubled.map((t, i) => (
+          <span key={i}>{t}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const now = new Date();
+  const diagramDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+  return (
+    <main>
+      {/* NAV */}
+      <header className="nav">
+        <div className="container-x nav-inner">
+          <div className="brand">
+            <span className="brand-mark">{site.brand}</span>
+            <span className="brand-sub">{site.established}</span>
+          </div>
+          <nav className="nav-links" aria-label="Primary">
+            {site.nav.map((link) => (
+              <a className="nav-link" href={link.href} key={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <a className="btn btn-primary" href="#cta">
+            <span className="dot" />
             Book a session
           </a>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-7xl px-6 pt-24 pb-0 md:px-10 lg:pt-32">
-        <div className="grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
+      {/* HERO */}
+      <section className="container-x" aria-label="Hero">
+        <div className="sheet-sig">
+          <span>Sheet 01 / Homepage</span>
+          <span className="right">Fig. 01 — Where AI fits</span>
+        </div>
 
-          {/* Left: headline + CTAs */}
-          <div className="flex flex-col justify-between gap-16">
-            <div className="grid gap-8">
-              <p className="text-xs font-medium uppercase tracking-[0.32em] text-[#1749ff]">
-                Built for operators in the real world
-              </p>
-              <h1 className="font-serif text-5xl leading-[1.04] text-black md:text-6xl lg:text-7xl xl:text-[5.5rem]">
-                AI that works inside the business you already have.
-              </h1>
-              <p className="max-w-lg text-lg leading-8 text-black/60">
-                We help companies audit operations, redesign workflows, and implement practical AI tools without pretending the old systems, approval chains, and operational constraints do not exist.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="#cta"
-                className="rounded-full bg-black px-7 py-3.5 text-sm font-medium transition-colors hover:bg-black/80 text-[#f5eded]"
-              >
-                Book the working session
-              </a>
-              <a
-                href="#services"
-                className="rounded-full border border-black/20 bg-transparent px-7 py-3.5 text-sm font-medium text-black transition-colors hover:border-black/50"
-              >
-                What we do ↓
-              </a>
-            </div>
-          </div>
+        <RuleEdge variant="top" />
 
-          {/* Right: Mondrian composition */}
-          <div className="hidden lg:block">
-            <div className="grid h-full min-h-[480px] grid-cols-3 grid-rows-4 gap-2">
-              <div className="col-span-2 row-span-2 bg-[#1749ff]" />
-              <div className="col-span-1 row-span-1 bg-[#ffde59]" />
-              <div className="col-span-1 row-span-1 border border-black/10 bg-white" />
-              <div className="col-span-1 row-span-2 bg-[#e53935]" />
-              <div className="col-span-2 row-span-1 border border-black/10 bg-transparent" />
-              <div className="col-span-1 row-span-1 bg-[#ffde59]" />
-              <div className="col-span-1 row-span-1 bg-black" />
-              <div className="col-span-1 row-span-1 border border-black/10 bg-white" />
+        <div className="ruled-surface">
+          <div className="ruled">
+            <div className="c-1-7 hero-left">
+              <span className="kicker">{hero.kicker}</span>
+              <h1 className="hero">{hero.headline}</h1>
+              <p className="hero-lede">{hero.lede}</p>
+
+              <dl className="hero-meta">
+                {hero.meta.map((row) => (
+                  <Fragment key={row.term}>
+                    <dt>{row.term}</dt>
+                    <dd>{row.detail}</dd>
+                  </Fragment>
+                ))}
+              </dl>
+
+              <div className="hero-cta">
+                <a className="btn btn-primary" href={hero.primaryCta.href}>
+                  {hero.primaryCta.label}
+                </a>
+                <a className="btn btn-ghost" href={hero.secondaryCta.href}>
+                  {hero.secondaryCta.label}
+                </a>
+                <span className="cta-note">{hero.ctaNote}</span>
+              </div>
+
+              <div className="plate" aria-hidden="true">
+                <div className="mond">
+                  <div className="b1" />
+                  <div className="b2" />
+                  <div className="b3" />
+                  <div className="b4" />
+                  <div className="b5" />
+                </div>
+                <div className="plate-cap">
+                  <b>Plate 00</b>
+                  <br />
+                  Composition in
+                  <br />
+                  signal · highlight · warn
+                </div>
+              </div>
+            </div>
+
+            <div className="c-8-12">
+              <figure
+                className="diagram"
+                aria-label="Operating diagram — where AI fits"
+              >
+                <figcaption className="diagram-header">
+                  <span className="left">Fig. 01</span>
+                  <span>
+                    Operating Diagram · v. {diagramDate} ·{" "}
+                    <span
+                      className="live-dot"
+                      style={{ color: "var(--signal)" }}
+                    >
+                      ● LIVE
+                    </span>
+                  </span>
+                </figcaption>
+
+                <div className="diagram-body diagram-inner">
+                  {diagram.rows.map((row) => (
+                    <div
+                      className={`row${row.key === "decision" ? " decision" : ""}`}
+                      data-row={row.key}
+                      key={row.key}
+                    >
+                      <div className="row-label">
+                        <span className="tick" />
+                        {row.label}
+                      </div>
+                      <div
+                        className={`track${row.key === "decision" ? " decision" : ""}`}
+                      >
+                        <div
+                          className={`node${row.nodes[0].ai ? " is-ai" : ""}`}
+                        >
+                          <span className="idx">{row.nodes[0].idx}</span>
+                          {row.nodes[0].label}
+                        </div>
+                        <div
+                          className={`conn${
+                            row.key === "decision" ? " is-ai-in" : ""
+                          }`}
+                        />
+                        <div
+                          className={`node${row.nodes[1].ai ? " is-ai" : ""}`}
+                        >
+                          <span className="idx">{row.nodes[1].idx}</span>
+                          {row.nodes[1].label}
+                        </div>
+                        <div
+                          className={`conn${
+                            row.key === "decision" ? " is-ai-out" : ""
+                          }`}
+                        />
+                        <div
+                          className={`node${row.nodes[2].ai ? " is-ai" : ""}`}
+                        >
+                          <span className="idx">{row.nodes[2].idx}</span>
+                          {row.nodes[2].label}
+                        </div>
+                        {row.key === "decision" && (
+                          <>
+                            <span className="vconn up" aria-hidden="true" />
+                            <span className="vconn down" aria-hidden="true" />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="diagram-caption">
+                  <span className="lead">Fig. 01 — Where AI fits</span>
+                  <span>1 of 1 · not to scale</span>
+                </div>
+              </figure>
             </div>
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="mt-20 border-t border-black/10">
-          <div className="grid grid-cols-1 divide-y divide-black/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            {heroStats.map((item) => (
-              <div key={item.label} className="px-0 py-10 sm:px-10 first:sm:pl-0 last:sm:pr-0">
-                <p className="font-serif text-5xl text-black">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-black/50">{item.label}</p>
+        <RuleEdge variant="bottom" />
+
+        {/* STATS */}
+        <div className="stats-wrap">
+          <div className="stats">
+            {heroStats.map((s, i) => (
+              <div
+                className={`stat ${i === 0 ? "first" : i === heroStats.length - 1 ? "last" : "mid"}`}
+                key={i}
+              >
+                <div className="label-top">
+                  <span>Metric {String(i + 1).padStart(2, "0")}</span>
+                  <span>{s.kind}</span>
+                </div>
+                <div className="value">
+                  {s.value}
+                  {s.unit && <span className="unit">{s.unit}</span>}
+                </div>
+                <div className="desc">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
+
+        <div style={{ height: 96 }} />
       </section>
 
-      {/* Before / After */}
-      <section className="mt-0 border-t border-black/10">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-2">
-            <div className="border-b border-black/10 bg-[#1749ff] px-10 py-16 text-white md:border-b-0 md:border-r md:border-white/10 md:px-14 md:py-20">
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/60">Before</p>
-              <p className="mt-6 font-serif text-3xl leading-snug md:text-4xl">
-                Smart people, patchwork processes, and old systems nobody wants to touch.
-              </p>
+      {/* BEFORE / AFTER */}
+      <section className="container-x section-rule" aria-label="Before and After">
+        <div className="sheet-sig">
+          <span>Sheet 02 / Before &amp; After</span>
+          <span className="right">Fig. 02 — State change</span>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="beforeafter">
+          <div className="ba-cell before">
+            <div className="ba-label">
+              <span>Before</span>
+              <span className="badge">{beforeAfter.before.label}</span>
             </div>
-            <div className="bg-[#0d0d0d] px-10 py-16 text-white md:px-14 md:py-20">
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">After</p>
-              <p className="mt-6 font-serif text-3xl leading-snug md:text-4xl">
-                Clear workflows, useful internal AI tools, and adoption that survives contact with daily operations.
-              </p>
+            <p className="ba-text">{beforeAfter.before.text}</p>
+            <div className="ba-mond" aria-hidden="true">
+              <div className="m1" />
+              <div className="m2" />
+              <div className="m3" />
             </div>
+            <Ticker items={beforeAfter.before.ticker} />
+            <div className="ba-meta">{beforeAfter.before.meta}</div>
+          </div>
+
+          <div className="ba-cell after">
+            <div className="ba-label">
+              <span>After</span>
+              <span className="badge">{beforeAfter.after.label}</span>
+            </div>
+            <p className="ba-text">{beforeAfter.after.text}</p>
+            <div className="ba-mond" aria-hidden="true">
+              <div className="m1" />
+              <div className="m2" />
+              <div className="m3" />
+            </div>
+            <Ticker items={beforeAfter.after.ticker} after />
+            <div className="ba-meta">{beforeAfter.after.meta}</div>
           </div>
         </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
-      {/* Services */}
-      <section id="services" className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-        <SectionHeading
-          eyebrow="Services"
-          title="What we do when AI needs to fit the operation, not the keynote"
-          description="Audit, redesign, and implementation support for companies that cannot afford generic advice or brittle automation."
-        />
-        <div className="mt-20 grid border-t border-black/10 md:grid-cols-2">
-          {services.map((service, index) => (
-            <article
-              key={service.title}
-              className={`py-12 ${index % 2 === 0 ? "md:pr-16" : "md:pl-16"} ${index < 2 ? "md:border-b md:border-black/10" : ""} ${index % 2 === 0 && index < services.length - 1 ? "border-b border-black/10 md:border-b md:border-r md:border-black/10" : "border-b border-black/10 last:border-b-0"}`}
-            >
-              <p className="text-xs font-medium tabular-nums tracking-[0.2em] text-black/30">0{index + 1}</p>
-              <h3 className="mt-5 font-serif text-2xl leading-tight text-black md:text-3xl">
-                {service.title}
-              </h3>
-              <p className="mt-4 text-base leading-7 text-black/58">{service.description}</p>
+      {/* SERVICES */}
+      <section id="services" className="container-x section" aria-label="Services">
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>Services · Sheet 03</span>
+            <span className="right">§ 03</span>
+          </div>
+          <h2>Where we create measurable business wins.</h2>
+          <p className="desc">
+            Audit, design, and implementation — partnerships for operators who want AI woven into
+            the business they already run. We're passionate about these tools and build with them
+            every day, so your team stays ahead of what's suddenly possible.
+          </p>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="services-grid">
+          {services.map((s, i) => (
+            <article className="service" key={s.title}>
+              <div className="num">0{i + 1}</div>
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.description}</p>
+                <span className="tag">{s.tag}</span>
+              </div>
             </article>
           ))}
         </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
-      {/* Process */}
-      <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-          <SectionHeading
-            eyebrow="Process"
-            title="A practical sequence from audit to adoption"
-            description="We work in deliberate passes so the implementation fits the business instead of turning into another stalled initiative."
-          />
-          <div className="mt-20 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step, index) => (
-              <article
-                key={step.index}
-                className={`p-8 ${index === 1 ? "bg-[#ffde59]" : index === 2 ? "bg-[#f5f2ea]" : index === 3 ? "bg-[#1749ff] text-white" : "border border-black/10 bg-white"}`}
-              >
-                <p className={`text-xs font-medium tabular-nums tracking-[0.2em] ${index === 3 ? "text-white/50" : "text-black/35"}`}>
-                  {step.index}
-                </p>
-                <h3 className="mt-10 text-xl font-medium leading-tight">{step.title}</h3>
-                <p className={`mt-4 text-sm leading-7 ${index === 3 ? "text-white/70" : "text-black/58"}`}>
-                  {step.description}
-                </p>
-              </article>
-            ))}
+      {/* PROCESS */}
+      <section
+        id="process"
+        className="container-x section section-rule"
+        aria-label="Process"
+      >
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>Process · Sheet 04</span>
+            <span className="right">§ 04</span>
           </div>
+          <h2>From first conversation to compounding wins.</h2>
+          <p className="desc">
+            We move in deliberate passes so momentum builds early and every step ships something
+            your team can actually use.
+          </p>
         </div>
-      </section>
+        <RuleEdge variant="top" />
 
-      {/* Proof */}
-      <section className="border-t border-black/10">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32 lg:grid lg:grid-cols-2 lg:gap-24">
-          <SectionHeading
-            eyebrow="Proof"
-            title="Proof should come from systems that shipped and workflows that improved"
-            description="The structure is ready for real examples, but we are not stuffing the page with fake numbers or synthetic bravado."
-          />
-          <div className="mt-12 grid gap-0 border-t border-black/10 lg:mt-0 lg:border-t-0 lg:border-l lg:pl-0">
-            {proofItems.map((item, index) => (
-              <div
-                key={item}
-                className={`py-8 text-base leading-7 text-black/70 ${index < proofItems.length - 1 ? "border-b border-black/10" : ""} ${index === 1 ? "lg:pl-12" : "lg:pl-12"}`}
-              >
-                {item}
+        <div className="process">
+          {processSteps.map((s) => (
+            <article className={`step${s.ai ? " is-ai" : ""}`} key={s.index}>
+              <div className="step-top">
+                <span className="idx">{s.index}</span>
+                <span className={`chip ${s.chip}`} aria-hidden="true" />
               </div>
-            ))}
-          </div>
+              <h3>{s.title}</h3>
+              <p>{s.description}</p>
+            </article>
+          ))}
         </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
-      {/* Team */}
-      <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-          <SectionHeading
-            eyebrow="Team"
-            title="A small team that can think commercially and execute inside messy operations"
-            description="No strategy handoff circus. The people shaping the approach are the same people close to the systems and the implementation."
-          />
-          <div className="mt-20 grid gap-0 border-t border-black/10 md:grid-cols-3 md:divide-x md:divide-black/10">
-            {team.map((person, index) => (
-              <article
-                key={person.name}
-                className={`py-10 md:px-10 first:md:pl-0 last:md:pr-0 ${index < team.length - 1 ? "border-b border-black/10 md:border-b-0" : ""}`}
-              >
-                <div
-                  className={`inline-block h-1.5 w-10 ${index === 0 ? "bg-[#ffde59]" : index === 1 ? "bg-[#1749ff]" : "bg-[#e53935]"}`}
-                />
-                <p className="mt-5 text-xs font-medium uppercase tracking-[0.22em] text-black/40">{person.role}</p>
-                <h3 className="mt-4 font-serif text-2xl text-black">{person.name}</h3>
-                <p className="mt-4 text-sm leading-7 text-black/58">{person.bio}</p>
-              </article>
-            ))}
+      {/* TEAM */}
+      <section id="team" className="container-x section section-rule" aria-label="Team">
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>Team · Sheet 05</span>
+            <span className="right">§ 05</span>
           </div>
+          <h2>
+            A small team that thinks commercially and ships alongside you.
+          </h2>
+          <p className="desc">
+            The people shaping the strategy are the same people close to the code, the systems,
+            and the implementation.
+          </p>
         </div>
+        <RuleEdge variant="top" />
+
+        <div className="team-grid">
+          {team.map((m, i) => (
+            <article className="member" key={m.name}>
+              <div className="portrait">
+                {m.img && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={m.img} alt={m.name} loading="lazy" />
+                )}
+                <span className="tag">
+                  Plate 06.{String.fromCharCode(65 + i)}
+                </span>
+              </div>
+              <div className="role">{m.role}</div>
+              <div className="name">{m.name}</div>
+              <div className="bio">{m.bio}</div>
+            </article>
+          ))}
+        </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
-      {/* Fit */}
-      <section className="border-t border-black/10">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-          <SectionHeading
-            eyebrow="Fit"
-            title="Who this is for, and who should skip it"
-            description="The work goes best when leadership wants practical leverage, not a cosmetic AI story for the website."
-          />
-          <div className="mt-20 grid gap-6 md:grid-cols-2">
-            <div className="bg-[#1749ff] p-10 text-white">
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/55">For</p>
-              <ul className="mt-8 grid gap-5 text-base leading-7">
-                {fit.for.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-1 text-white/50">—</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+      {/* FIT */}
+      <section id="fit" className="container-x section section-rule" aria-label="Fit">
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>Fit · Sheet 06</span>
+            <span className="right">§ 06</span>
+          </div>
+          <h2>Where we book the biggest wins.</h2>
+          <p className="desc">
+            We partner best with operators who see this moment for what it is — and want to move
+            while the window is wide open.
+          </p>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="fit-grid">
+          <div className="fit-col for">
+            <div className="fit-head">
+              <span className="label">For</span>
+              <span className="mark">06.A</span>
             </div>
-            <div className="border border-black/10 bg-white p-10">
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-black/40">Not for</p>
-              <ul className="mt-8 grid gap-5 text-base leading-7 text-black/70">
-                {fit.notFor.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span className="mt-1 text-black/30">—</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+            <ul className="fit-list">
+              {fit.for.map((t) => (
+                <li className="fit-item" key={t}>
+                  <span className="bull" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="fit-col wins">
+            <div className="fit-head">
+              <span className="label">Wins we book</span>
+              <span className="mark">06.B</span>
             </div>
+            <ul className="fit-list">
+              {fit.wins.map((t) => (
+                <li className="fit-item" key={t}>
+                  <span className="bull" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-          <SectionHeading
-            eyebrow="FAQ"
-            title="Straight answers"
-            description="Short version: we help companies make AI useful inside the operational reality they already have."
-          />
-          <div className="mt-20 grid gap-0 border-t border-black/10 lg:grid-cols-2 lg:gap-x-24">
-            {faqs.map((faq, index) => (
-              <article
-                key={faq.question}
-                className={`py-10 ${index < faqs.length - 1 ? "border-b border-black/10" : ""} ${index === faqs.length - 1 ? "lg:border-b-0" : ""} ${index === faqs.length - 2 ? "lg:border-b-0" : ""}`}
-              >
-                <h3 className="font-serif text-xl text-black md:text-2xl">{faq.question}</h3>
-                <p className="mt-4 text-base leading-7 text-black/58">{faq.answer}</p>
-              </article>
-            ))}
+      <section id="faq" className="container-x section section-rule" aria-label="FAQ">
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>FAQ · Sheet 07</span>
+            <span className="right">§ 07</span>
           </div>
+          <h2>Straight answers.</h2>
+          <p className="desc">
+            Short version: we partner with operators who want AI that delivers measurable wins — fast.
+          </p>
         </div>
+        <RuleEdge variant="top" />
+
+        <div className="faq-list">
+          {faqs.map((f, i) => (
+            <details className="faq" key={f.question} open={i === 0}>
+              <summary>
+                <span className="qidx">Q.{String(i + 1).padStart(2, "0")}</span>
+                <span className="q">{f.question}</span>
+                <span className="caret">+</span>
+              </summary>
+              <div className="a">{f.answer}</div>
+            </details>
+          ))}
+        </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
       {/* CTA */}
-      <section id="cta" className="border-t border-black/10 bg-[#ffde59]">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-32">
-          <div className="grid gap-14 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-black/50">Get started</p>
-              <h2 className="mt-6 font-serif text-4xl leading-[1.08] text-black md:text-5xl lg:text-6xl xl:text-7xl">
-                If AI sounds promising but your operation is full of edge cases, that is exactly where we work.
-              </h2>
+      <section id="cta" className="container-x section" aria-label="Get started">
+        <div className="sheet-sig">
+          <span>Sheet 08 / Contact</span>
+          <span className="right">Fig. 08 — Next step</span>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="cta-marquee" aria-hidden="true">
+          <div className="cta-marquee-track">
+            {[...marquee, ...marquee].map((m, i) => (
+              <span key={i}>{m}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="cta-band">
+          <div className="cta-left">
+            <div className="cta-eyebrow">{cta.eyebrow}</div>
+            <h2 className="cta-headline">{cta.headline}</h2>
+          </div>
+          <div className="cta-right">
+            <div className="cta-email-row">
+              <a className="cta-email" href={`mailto:${site.email}`}>
+                <span>{site.email}</span>
+                <span className="glyph">→</span>
+              </a>
+              <a className="cta-email" href="#">
+                <span>Schedule intro call</span>
+                <span className="glyph">→</span>
+              </a>
+              <p className="cta-note2">{cta.note}</p>
             </div>
-            <div className="flex flex-col gap-4 lg:items-end">
-              <a
-                href="mailto:hello@gamechanger.ai"
-                className="inline-block rounded-full bg-black px-8 py-4 text-sm font-medium transition-colors hover:bg-black/80 text-[#f5eded]"
-              >
-                hello@gamechanger.ai
-              </a>
-              <a
-                href="#"
-                className="inline-block rounded-full border border-black/20 bg-white/60 px-8 py-4 text-sm font-medium text-black transition-colors hover:bg-white"
-              >
-                Schedule intro call
-              </a>
-              <p className="max-w-xs text-right text-sm leading-6 text-black/60">
-                Book a working session. We will review the current workflow, the system constraints, and the best first use cases.
-              </p>
+            <div className="cta-kv">
+              {cta.kv.map((row) => (
+                <div key={row.k}>
+                  <span className="k">{row.k}</span>
+                  <span className="v">{row.v}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
+        <RuleEdge variant="bottom" />
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-black/10 bg-[#0d0d0d]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 md:px-10">
-          <span className="text-sm text-white/40">GameChanger AI</span>
-          <span className="text-sm text-white/30">© 2025</span>
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="container-x">
+          <div className="footer-inner">
+            <div className="footer-brand">
+              <div className="mark">{site.brand}</div>
+              <div className="tag">{site.positioning}</div>
+            </div>
+            <nav className="footer-nav" aria-label="Footer">
+              {site.footerNav.map((link) => (
+                <a href={link.href} key={link.href}>
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+            <div className="footer-contact">
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+              <span>
+                {site.cities.map((city, i) => (
+                  <span key={city}>
+                    {city}
+                    {i < site.cities.length - 1 && <br />}
+                  </span>
+                ))}
+              </span>
+            </div>
+          </div>
+          <div className="footer-legal">
+            <span className="bar">© {now.getFullYear()} {site.brand}</span>
+            <span className="right">
+              <span>Est. 2025</span>
+              <span>Homepage · v. {diagramDate}</span>
+            </span>
+          </div>
         </div>
       </footer>
-
     </main>
   );
 }
