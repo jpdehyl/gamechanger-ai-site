@@ -368,7 +368,7 @@ export default function Home() {
                   <img src={m.img} alt={m.name} loading="lazy" />
                 )}
                 <span className="tag">
-                  Plate 06.{String.fromCharCode(65 + i)}
+                  Plate 05.{String.fromCharCode(65 + i)}
                 </span>
               </div>
               <div className="role">{m.role}</div>

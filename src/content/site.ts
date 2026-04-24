@@ -119,19 +119,19 @@ export const team = [
     name: "Marc Snegg",
     role: "Commercial strategy · North America relationships",
     bio: "Brings business judgment, commercial clarity, and a strong operating network across North America, keeping the work tied to real decisions, real buyers, and measurable outcomes.",
-    img: undefined as string | undefined,
+    img: "/assets/marc.png" as string | undefined,
   },
   {
     name: "JP Domínguez",
     role: "Systems · Workflow design · Implementation",
     bio: "Translates operational complexity into AI systems that make businesses measurably faster, sharper, and more delightful to interact with — with a bias toward legacy environments and practical rollout.",
-    img: undefined as string | undefined,
+    img: "/assets/jp.png" as string | undefined,
   },
   {
     name: "Juan Trujillo",
     role: "Internal tools · Automation · Delivery",
     bio: "Turns designs into internal products people love to use — automations and AI tools that give teams back hours and customers a noticeably smoother experience.",
-    img: undefined as string | undefined,
+    img: "/assets/truji.png" as string | undefined,
   },
 ];
 
