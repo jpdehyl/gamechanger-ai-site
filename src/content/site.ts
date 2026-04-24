@@ -118,7 +118,7 @@ export const team = [
   {
     name: "Marc Snegg",
     role: "Commercial strategy · North America relationships",
-    bio: "Brings business judgment, commercial clarity, and a strong operating network across North America, keeping the work tied to real decisions, real buyers, and measurable outcomes.",
+    bio: "15-year career as an operator, real estate investor, and founder of Ground Game, building nearshore sales teams for client businesses.",
     img: "/assets/marc.png" as string | undefined,
   },
   {
