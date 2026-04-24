@@ -63,6 +63,57 @@
   }
 }
 
+/* ---------- Masthead (editorial strip above nav) ---------- */
+.masthead {
+  background: var(--foreground);
+  color: #f5eded;
+  border-bottom: 1px solid var(--foreground);
+}
+.masthead-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 24px;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .masthead-inner {
+    padding: 10px 40px;
+  }
+}
+.masthead-mark {
+  color: #f5eded;
+  letter-spacing: 0.24em;
+  flex-shrink: 0;
+}
+.masthead-rule {
+  flex-shrink: 0;
+  width: 18px;
+  height: 1px;
+  background: var(--signal);
+  display: inline-block;
+}
+.masthead-tag {
+  color: rgba(245, 237, 237, 0.78);
+  letter-spacing: 0.26em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .masthead-inner {
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+  }
+  .masthead-tag {
+    letter-spacing: 0.2em;
+  }
+}
+
 /* ---------- NAV ---------- */
 .nav {
   position: sticky;
@@ -1201,6 +1252,142 @@ h1.hero {
   height: 1px;
   background: var(--rule-strong);
   align-self: center;
+}
+
+/* ---------- Momentum ---------- */
+.momentum-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  border-top: 1px solid var(--foreground);
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 900px) {
+  .momentum-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    border-bottom: 0;
+  }
+}
+.pillar {
+  grid-column: span 4;
+  padding: 40px 28px 44px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 320px;
+  position: relative;
+}
+.pillar:first-child {
+  padding-left: 0;
+}
+.pillar:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+@media (max-width: 900px) {
+  .pillar {
+    grid-column: 1 / -1;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 36px 0;
+    min-height: 0;
+  }
+  .pillar:last-child {
+    border-bottom: 0;
+  }
+}
+.pillar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.pillar-top .idx {
+  color: var(--foreground);
+  font-size: 13px;
+  letter-spacing: 0.24em;
+}
+.pillar-top .label {
+  color: var(--signal);
+}
+.pillar h3 {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+.pillar p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--foreground-mute);
+  max-width: 42ch;
+}
+.pillar .tag {
+  margin-top: auto;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+}
+.pillar .tag::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.momentum-stamp {
+  margin-top: 32px;
+  border: 1px solid var(--rule-strong);
+  border-left: 3px solid var(--signal);
+  background: var(--background-elev);
+  padding: 26px 28px 28px;
+}
+.stamp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--signal);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.stamp-head .right {
+  color: var(--foreground-mute);
+}
+.stamp-body {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground);
+  max-width: 72ch;
+}
+@media (max-width: 700px) {
+  .momentum-stamp {
+    padding: 22px 20px 24px;
+  }
+  .stamp-body {
+    font-size: 15px;
+  }
 }
 
 /* ---------- Process ---------- */

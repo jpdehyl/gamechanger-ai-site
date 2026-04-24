@@ -9,6 +9,7 @@ import {
   fit,
   hero,
   heroStats,
+  momentum,
   processSteps,
   proof,
   services,
@@ -53,6 +54,15 @@ export default function Home() {
 
   return (
     <main>
+      {/* MASTHEAD — editorial strip above nav */}
+      <div className="masthead" role="banner" aria-label="Positioning">
+        <div className="container-x masthead-inner">
+          <span className="masthead-mark">{site.brand}</span>
+          <span className="masthead-rule" aria-hidden="true" />
+          <span className="masthead-tag">{site.tagline}</span>
+        </div>
+      </div>
+
       {/* NAV */}
       <header className="nav">
         <div className="container-x nav-inner">
@@ -238,11 +248,52 @@ export default function Home() {
         <div style={{ height: 96 }} />
       </section>
 
+      {/* MOMENTUM — why this moment */}
+      <section
+        id="momentum"
+        className="container-x section section-rule"
+        aria-label="Momentum"
+      >
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>{momentum.eyebrow}</span>
+            <span className="right">{momentum.section}</span>
+          </div>
+          <h2>{momentum.headline}</h2>
+          <p className="desc">{momentum.desc}</p>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="momentum-grid">
+          {momentum.pillars.map((p) => (
+            <article className="pillar" key={p.label}>
+              <div className="pillar-top">
+                <span className="idx">{p.index}</span>
+                <span className="label">{p.label}</span>
+              </div>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <span className="tag">{p.tag}</span>
+            </article>
+          ))}
+        </div>
+
+        <aside className="momentum-stamp" aria-label="Adopted to your systems">
+          <div className="stamp-head">
+            <span>{momentum.stamp.lead}</span>
+            <span className="right">{momentum.stamp.meta}</span>
+          </div>
+          <p className="stamp-body">{momentum.stamp.body}</p>
+        </aside>
+
+        <RuleEdge variant="bottom" />
+      </section>
+
       {/* BEFORE / AFTER */}
       <section className="container-x section-rule" aria-label="Before and After">
         <div className="sheet-sig">
-          <span>Sheet 02 / Before &amp; After</span>
-          <span className="right">Fig. 02 — State change</span>
+          <span>Sheet 03 / Before &amp; After</span>
+          <span className="right">Fig. 03 — State change</span>
         </div>
         <RuleEdge variant="top" />
 
@@ -285,8 +336,8 @@ export default function Home() {
       <section id="services" className="container-x section" aria-label="Services">
         <div className="section-head">
           <div className="eyebrow">
-            <span>Services · Sheet 03</span>
-            <span className="right">§ 03</span>
+            <span>Services · Sheet 04</span>
+            <span className="right">§ 04</span>
           </div>
           <h2>Where we create measurable business wins.</h2>
           <p className="desc">
@@ -321,8 +372,8 @@ export default function Home() {
       >
         <div className="section-head">
           <div className="eyebrow">
-            <span>Process · Sheet 04</span>
-            <span className="right">§ 04</span>
+            <span>Process · Sheet 05</span>
+            <span className="right">§ 05</span>
           </div>
           <h2>From first conversation to compounding wins.</h2>
           <p className="desc">
@@ -356,8 +407,8 @@ export default function Home() {
       >
         <div className="section-head">
           <div className="eyebrow">
-            <span>Proof · Sheet 05</span>
-            <span className="right">§ 05</span>
+            <span>Proof · Sheet 06</span>
+            <span className="right">§ 06</span>
           </div>
           <h2>Operators shipping with us, not talking about us.</h2>
           <p className="desc">
@@ -421,7 +472,7 @@ export default function Home() {
 
         <div className="proof-plates">
           <div className="proof-plates-head">
-            <span>Plates 05.A — 05.C</span>
+            <span>Plates 06.A — 06.C</span>
             <span className="right">Modules shipped · live in production</span>
           </div>
           {proof.plates.map((plate) => (
@@ -455,8 +506,8 @@ export default function Home() {
       <section id="team" className="container-x section section-rule" aria-label="Team">
         <div className="section-head">
           <div className="eyebrow">
-            <span>Team · Sheet 06</span>
-            <span className="right">§ 06</span>
+            <span>Team · Sheet 07</span>
+            <span className="right">§ 07</span>
           </div>
           <h2>
             A small team that thinks commercially and ships alongside you.
@@ -477,7 +528,7 @@ export default function Home() {
                   <img src={m.img} alt={m.name} loading="lazy" />
                 )}
                 <span className="tag">
-                  Plate 06.{String.fromCharCode(65 + i)}
+                  Plate 07.{String.fromCharCode(65 + i)}
                 </span>
               </div>
               <div className="role">{m.role}</div>
@@ -494,8 +545,8 @@ export default function Home() {
       <section id="fit" className="container-x section section-rule" aria-label="Fit">
         <div className="section-head">
           <div className="eyebrow">
-            <span>Fit · Sheet 07</span>
-            <span className="right">§ 07</span>
+            <span>Fit · Sheet 08</span>
+            <span className="right">§ 08</span>
           </div>
           <h2>Where we book the biggest wins.</h2>
           <p className="desc">
@@ -543,8 +594,8 @@ export default function Home() {
       <section id="faq" className="container-x section section-rule" aria-label="FAQ">
         <div className="section-head">
           <div className="eyebrow">
-            <span>FAQ · Sheet 08</span>
-            <span className="right">§ 08</span>
+            <span>FAQ · Sheet 09</span>
+            <span className="right">§ 09</span>
           </div>
           <h2>Straight answers.</h2>
           <p className="desc">
@@ -572,8 +623,8 @@ export default function Home() {
       {/* CTA */}
       <section id="cta" className="container-x section" aria-label="Get started">
         <div className="sheet-sig">
-          <span>Sheet 09 / Contact</span>
-          <span className="right">Fig. 09 — Next step</span>
+          <span>Sheet 10 / Contact</span>
+          <span className="right">Fig. 10 — Next step</span>
         </div>
         <RuleEdge variant="top" />
 
