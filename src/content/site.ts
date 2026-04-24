@@ -3,7 +3,7 @@ export const site = {
   established: "Est. 2025 · Vancouver / Santa Cruz / Medellín",
   positioning:
     "Boutique AI consultancy helping operators turn today's tools into measurable business wins.",
-  email: "hello@gamechanger.ai",
+  email: "hello@gamechanger-ai.dev",
   cities: ["Vancouver", "Santa Cruz", "Medellín"],
   nav: [
     { label: "Services", href: "#services" },
