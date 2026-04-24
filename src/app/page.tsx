@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { AiWire } from "@/components/ai-wire";
+import { BookingModal } from "@/components/booking-modal";
 import {
   beforeAfter,
   cta,
@@ -66,7 +67,7 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <a className="btn btn-primary" href="#cta">
+          <a className="btn btn-primary" href="#cta" data-booker="">
             <span className="dot" />
             Book a session
           </a>
@@ -99,7 +100,11 @@ export default function Home() {
               </dl>
 
               <div className="hero-cta">
-                <a className="btn btn-primary" href={hero.primaryCta.href}>
+                <a
+                  className="btn btn-primary"
+                  href={hero.primaryCta.href}
+                  data-booker=""
+                >
                   {hero.primaryCta.label}
                 </a>
                 <a className="btn btn-ghost" href={hero.secondaryCta.href}>
@@ -585,7 +590,7 @@ export default function Home() {
                 <span>{site.email}</span>
                 <span className="glyph">→</span>
               </a>
-              <a className="cta-email" href="#">
+              <a className="cta-email" href="#" data-booker="">
                 <span>Schedule intro call</span>
                 <span className="glyph">→</span>
               </a>
@@ -641,6 +646,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <BookingModal />
     </main>
   );
 }
