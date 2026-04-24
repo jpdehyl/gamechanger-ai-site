@@ -1343,6 +1343,36 @@ h1.hero {
   color: var(--foreground-mute);
   max-width: 40ch;
 }
+.proof-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-strong);
+  background: var(--background-elev);
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.proof-url:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+.proof-url .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
+  display: inline-block;
+}
+.proof-url .glyph {
+  margin-left: 4px;
+  font-family: var(--font-geist-sans);
+}
 .proof-meta {
   margin-top: 28px;
   font-family: var(--font-geist-mono);
@@ -1371,27 +1401,228 @@ h1.hero {
   text-align: right;
   letter-spacing: 0.12em;
 }
-.proof-item {
-  padding: 28px 0;
+
+/* Problem / Approach / Outcomes */
+.proof-block {
+  padding: 28px 0 32px;
   border-bottom: 1px solid var(--rule);
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 20px;
 }
-.proof-item:last-child {
-  border-bottom: 0;
+.proof-block.is-approach {
+  border-left: 3px solid var(--signal);
+  padding-left: 20px;
+  margin-left: -20px;
 }
-.proof-item .pi-num {
+.proof-block-label {
   font-family: var(--font-geist-mono);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--foreground-mute);
 }
-.proof-item p {
-  font-size: 16px;
+.proof-block.is-approach .proof-block-label {
+  color: var(--signal);
+}
+.proof-block-title {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.25;
+  margin-top: 10px;
+  text-wrap: balance;
+}
+.proof-block-body {
+  margin-top: 12px;
+  font-size: 15.5px;
   line-height: 1.6;
   color: var(--foreground);
+  max-width: 60ch;
+}
+.proof-outcomes {
+  margin-top: 28px;
+}
+.proof-outcomes-head {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.proof-outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 700px) {
+  .proof-outcomes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.proof-outcome {
+  padding: 22px 18px 22px 0;
+  border-right: 1px solid var(--rule);
+}
+.proof-outcome:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+@media (max-width: 700px) {
+  .proof-outcome {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 18px 0;
+  }
+  .proof-outcome:last-child {
+    border-bottom: 0;
+  }
+}
+.po-value {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--foreground);
+}
+.po-label {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--foreground-mute);
+}
+
+/* Plates — screenshot gallery */
+.proof-plates {
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+}
+.proof-plates-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+}
+.proof-plate {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.proof-plate:last-child {
+  border-bottom: 0;
+}
+@media (max-width: 900px) {
+  .proof-plate {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    padding: 32px 0;
+  }
+}
+.proof-plate-meta {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.proof-plate-meta .tag {
+  color: var(--foreground);
+  border-left: 3px solid var(--signal);
+  padding-left: 10px;
+}
+.proof-plate-meta .kicker {
+  color: var(--foreground-mute);
+  padding-left: 13px;
+}
+.proof-plate-shot {
+  grid-column: span 7;
+  border: 1px solid var(--rule-strong);
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 1px 0 var(--rule), 0 18px 28px -22px rgba(0, 0, 0, 0.18);
+}
+.proof-plate-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.proof-shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--background-elev);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+}
+.proof-shot-bar .d {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.proof-shot-bar .d.r {
+  background: var(--warn);
+}
+.proof-shot-bar .d.y {
+  background: var(--highlight);
+}
+.proof-shot-bar .d.g {
+  background: var(--signal);
+}
+.proof-shot-bar .addr {
+  margin-left: 10px;
+}
+.proof-plate-cap {
+  grid-column: span 3;
+  padding-left: 20px;
+  border-left: 1px solid var(--rule);
+}
+@media (max-width: 900px) {
+  .proof-plate-meta,
+  .proof-plate-shot,
+  .proof-plate-cap {
+    grid-column: 1 / -1;
+  }
+  .proof-plate-shot {
+    margin-top: 16px;
+  }
+  .proof-plate-cap {
+    padding-left: 0;
+    padding-top: 16px;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 16px;
+  }
+}
+.proof-plate-cap h5 {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.proof-plate-cap p {
+  margin-top: 12px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--foreground-mute);
 }
 
 /* ---------- Team ---------- */

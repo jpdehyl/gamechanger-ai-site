@@ -356,7 +356,8 @@ export default function Home() {
           </div>
           <h2>Operators shipping with us, not talking about us.</h2>
           <p className="desc">
-            Short case studies of the work inside real businesses — not demos, not decks.
+            Case studies from inside real businesses — actual screens from the work, not
+            mockups, not decks.
           </p>
         </div>
         <RuleEdge variant="top" />
@@ -366,6 +367,16 @@ export default function Home() {
             <div className="proof-kicker">{proof.kicker}</div>
             <h3 className="proof-title">{proof.title}</h3>
             <p className="proof-summary">{proof.summary}</p>
+            <a
+              className="proof-url"
+              href={`https://${proof.url}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="dot" />
+              <span>{proof.url}</span>
+              <span className="glyph">↗</span>
+            </a>
             <div className="proof-meta">
               {proof.meta.map((row) => (
                 <div key={row.k}>
@@ -376,15 +387,60 @@ export default function Home() {
             </div>
           </div>
           <div className="proof-right">
-            {proof.items.map((item, i) => (
-              <div className="proof-item" key={i}>
-                <span className="pi-num">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p>{item}</p>
+            <article className="proof-block">
+              <div className="proof-block-label">{proof.problem.label}</div>
+              <h4 className="proof-block-title">{proof.problem.title}</h4>
+              <p className="proof-block-body">{proof.problem.body}</p>
+            </article>
+            <article className="proof-block is-approach">
+              <div className="proof-block-label">{proof.approach.label}</div>
+              <h4 className="proof-block-title">{proof.approach.title}</h4>
+              <p className="proof-block-body">{proof.approach.body}</p>
+            </article>
+            <div className="proof-outcomes">
+              <div className="proof-outcomes-head">
+                <span>03 / Outcomes</span>
+                <span className="right">measured, not promised</span>
               </div>
-            ))}
+              <div className="proof-outcomes-grid">
+                {proof.outcomes.map((o, i) => (
+                  <div className="proof-outcome" key={i}>
+                    <div className="po-value">{o.v}</div>
+                    <div className="po-label">{o.k}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="proof-plates">
+          <div className="proof-plates-head">
+            <span>Plates 05.A — 05.C</span>
+            <span className="right">Modules shipped · live in production</span>
+          </div>
+          {proof.plates.map((plate) => (
+            <figure className="proof-plate" key={plate.tag}>
+              <div className="proof-plate-meta">
+                <span className="tag">{plate.tag}</span>
+                <span className="kicker">{plate.kicker}</span>
+              </div>
+              <div className="proof-plate-shot">
+                <div className="proof-shot-bar" aria-hidden="true">
+                  <span className="d r" />
+                  <span className="d y" />
+                  <span className="d g" />
+                  <span className="addr">{proof.url}</span>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={plate.img} alt={plate.alt} loading="lazy" />
+              </div>
+              <figcaption className="proof-plate-cap">
+                <h5>{plate.title}</h5>
+                <p>{plate.body}</p>
+              </figcaption>
+            </figure>
+          ))}
         </div>
 
         <RuleEdge variant="bottom" />
