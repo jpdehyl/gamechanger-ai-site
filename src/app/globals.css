@@ -381,11 +381,12 @@
 h1.hero {
   font-family: var(--font-serif-display);
   font-weight: 400;
-  font-size: clamp(44px, 7.2vw, 92px);
+  font-size: clamp(40px, 5.6vw, 72px);
   line-height: 1.04;
   letter-spacing: -0.005em;
   margin-top: 24px;
   text-wrap: balance;
+  max-width: 18ch;
 }
 .hero-lede {
   font-family: var(--font-geist-sans);
@@ -436,6 +437,11 @@ h1.hero {
   .hero-left {
     padding-right: 16px;
   }
+}
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
 }
 
 /* ---------- Diagram ---------- */
@@ -879,12 +885,15 @@ h1.hero {
 
 /* ---------- Hero Mondrian plate ---------- */
 .plate {
-  margin-top: 48px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: 160px 1fr;
   gap: 18px;
   align-items: end;
   max-width: 520px;
+}
+.hero-right .plate {
+  justify-self: start;
 }
 .plate .mond {
   display: grid;

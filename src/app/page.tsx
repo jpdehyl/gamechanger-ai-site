@@ -128,26 +128,9 @@ export default function Home() {
                 </a>
                 <span className="cta-note">{hero.ctaNote}</span>
               </div>
-
-              <div className="plate" aria-hidden="true">
-                <div className="mond">
-                  <div className="b1" />
-                  <div className="b2" />
-                  <div className="b3" />
-                  <div className="b4" />
-                  <div className="b5" />
-                </div>
-                <div className="plate-cap">
-                  <b>Plate 00</b>
-                  <br />
-                  Composition in
-                  <br />
-                  signal · highlight · warn
-                </div>
-              </div>
             </div>
 
-            <div className="c-8-12">
+            <div className="c-8-12 hero-right">
               <figure
                 className="diagram"
                 aria-label="Operating diagram — where AI fits"
@@ -223,6 +206,23 @@ export default function Home() {
                   <span>1 of 1 · not to scale</span>
                 </div>
               </figure>
+
+              <div className="plate" aria-hidden="true">
+                <div className="mond">
+                  <div className="b1" />
+                  <div className="b2" />
+                  <div className="b3" />
+                  <div className="b4" />
+                  <div className="b5" />
+                </div>
+                <div className="plate-cap">
+                  <b>Plate 00</b>
+                  <br />
+                  Composition in
+                  <br />
+                  signal · highlight · warn
+                </div>
+              </div>
             </div>
           </div>
         </div>
