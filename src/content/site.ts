@@ -8,12 +8,14 @@ export const site = {
   nav: [
     { label: "Services", href: "#services" },
     { label: "Process", href: "#process" },
+    { label: "Proof", href: "#proof" },
     { label: "Team", href: "#team" },
     { label: "FAQ", href: "#faq" },
   ],
   footerNav: [
     { label: "Services", href: "#services" },
     { label: "Process", href: "#process" },
+    { label: "Proof", href: "#proof" },
     { label: "Team", href: "#team" },
     { label: "Fit", href: "#fit" },
     { label: "FAQ", href: "#faq" },
@@ -171,6 +173,23 @@ export const faqs = [
       "By shipping tools people genuinely want to use. When software saves time, sharpens decisions, or delights a customer, adoption takes care of itself.",
   },
 ];
+
+export const proof = {
+  kicker: "Case study · 01",
+  title: "GameTime",
+  summary:
+    "Operator-led partnership bringing AI and agent workflows into a fast-moving commercial team.",
+  meta: [
+    { k: "Sector", v: "Consumer · Commercial ops" },
+    { k: "Role", v: "AI audit · Workflow design · Internal tools" },
+    { k: "Engagement", v: "2026 · Ongoing" },
+  ],
+  items: [
+    "Mapped the commercial and operations workflow end-to-end to find where AI and agent workflows removed the most friction.",
+    "Designed a focused internal toolset on top of the systems the team already runs, so adoption did not depend on a platform rebuild.",
+    "Shipped the first working prototype inside the first few weeks — running on live work, not slides.",
+  ],
+};
 
 export const beforeAfter = {
   before: {

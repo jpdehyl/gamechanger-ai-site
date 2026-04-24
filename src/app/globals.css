@@ -1285,6 +1285,115 @@ h1.hero {
   margin-top: 14px;
 }
 
+/* ---------- Proof ---------- */
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 900px) {
+  .proof-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+}
+.proof-left {
+  grid-column: span 5;
+  padding: 48px 40px 48px 0;
+  border-right: 1px solid var(--rule);
+}
+.proof-right {
+  grid-column: span 7;
+  padding: 48px 0 48px 40px;
+  display: grid;
+  gap: 0;
+}
+@media (max-width: 900px) {
+  .proof-left {
+    grid-column: 1 / -1;
+    padding: 40px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .proof-right {
+    grid-column: 1 / -1;
+    padding: 40px 0;
+  }
+}
+.proof-kicker {
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+.proof-title {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.18;
+  margin-top: 20px;
+  text-wrap: balance;
+}
+.proof-summary {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground-mute);
+  max-width: 40ch;
+}
+.proof-meta {
+  margin-top: 28px;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+  display: grid;
+  gap: 10px;
+}
+.proof-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.proof-meta div:last-child {
+  border-bottom: 0;
+}
+.proof-meta .k {
+  color: var(--foreground-mute);
+}
+.proof-meta .v {
+  color: var(--foreground);
+  text-align: right;
+  letter-spacing: 0.12em;
+}
+.proof-item {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 20px;
+}
+.proof-item:last-child {
+  border-bottom: 0;
+}
+.proof-item .pi-num {
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+}
+.proof-item p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
 /* ---------- Team ---------- */
 .team-grid {
   display: grid;

@@ -9,6 +9,7 @@ import {
   heroStats,
   marquee,
   processSteps,
+  proof,
   services,
   site,
   team,
@@ -342,12 +343,59 @@ export default function Home() {
         <RuleEdge variant="bottom" />
       </section>
 
+      {/* PROOF */}
+      <section
+        id="proof"
+        className="container-x section section-rule"
+        aria-label="Proof"
+      >
+        <div className="section-head">
+          <div className="eyebrow">
+            <span>Proof · Sheet 05</span>
+            <span className="right">§ 05</span>
+          </div>
+          <h2>Operators shipping with us, not talking about us.</h2>
+          <p className="desc">
+            Short case studies of the work inside real businesses — not demos, not decks.
+          </p>
+        </div>
+        <RuleEdge variant="top" />
+
+        <div className="proof-grid">
+          <div className="proof-left">
+            <div className="proof-kicker">{proof.kicker}</div>
+            <h3 className="proof-title">{proof.title}</h3>
+            <p className="proof-summary">{proof.summary}</p>
+            <div className="proof-meta">
+              {proof.meta.map((row) => (
+                <div key={row.k}>
+                  <span className="k">{row.k}</span>
+                  <span className="v">{row.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="proof-right">
+            {proof.items.map((item, i) => (
+              <div className="proof-item" key={i}>
+                <span className="pi-num">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p>{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <RuleEdge variant="bottom" />
+      </section>
+
       {/* TEAM */}
       <section id="team" className="container-x section section-rule" aria-label="Team">
         <div className="section-head">
           <div className="eyebrow">
-            <span>Team · Sheet 05</span>
-            <span className="right">§ 05</span>
+            <span>Team · Sheet 06</span>
+            <span className="right">§ 06</span>
           </div>
           <h2>
             A small team that thinks commercially and ships alongside you.
@@ -368,7 +416,7 @@ export default function Home() {
                   <img src={m.img} alt={m.name} loading="lazy" />
                 )}
                 <span className="tag">
-                  Plate 05.{String.fromCharCode(65 + i)}
+                  Plate 06.{String.fromCharCode(65 + i)}
                 </span>
               </div>
               <div className="role">{m.role}</div>
@@ -385,8 +433,8 @@ export default function Home() {
       <section id="fit" className="container-x section section-rule" aria-label="Fit">
         <div className="section-head">
           <div className="eyebrow">
-            <span>Fit · Sheet 06</span>
-            <span className="right">§ 06</span>
+            <span>Fit · Sheet 07</span>
+            <span className="right">§ 07</span>
           </div>
           <h2>Where we book the biggest wins.</h2>
           <p className="desc">
@@ -400,7 +448,7 @@ export default function Home() {
           <div className="fit-col for">
             <div className="fit-head">
               <span className="label">For</span>
-              <span className="mark">06.A</span>
+              <span className="mark">07.A</span>
             </div>
             <ul className="fit-list">
               {fit.for.map((t) => (
@@ -414,7 +462,7 @@ export default function Home() {
           <div className="fit-col wins">
             <div className="fit-head">
               <span className="label">Wins we book</span>
-              <span className="mark">06.B</span>
+              <span className="mark">07.B</span>
             </div>
             <ul className="fit-list">
               {fit.wins.map((t) => (
@@ -434,8 +482,8 @@ export default function Home() {
       <section id="faq" className="container-x section section-rule" aria-label="FAQ">
         <div className="section-head">
           <div className="eyebrow">
-            <span>FAQ · Sheet 07</span>
-            <span className="right">§ 07</span>
+            <span>FAQ · Sheet 08</span>
+            <span className="right">§ 08</span>
           </div>
           <h2>Straight answers.</h2>
           <p className="desc">
@@ -463,8 +511,8 @@ export default function Home() {
       {/* CTA */}
       <section id="cta" className="container-x section" aria-label="Get started">
         <div className="sheet-sig">
-          <span>Sheet 08 / Contact</span>
-          <span className="right">Fig. 08 — Next step</span>
+          <span>Sheet 09 / Contact</span>
+          <span className="right">Fig. 09 — Next step</span>
         </div>
         <RuleEdge variant="top" />
 
