@@ -30,6 +30,8 @@ const INITIAL_FORM: Record<FormField, string> = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? site.bookingUrl;
+
 export function BookingModal() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>(1);
@@ -309,19 +311,36 @@ export function BookingModal() {
         </div>
 
         <div className={`onb-step${step === "confirm" ? " active" : ""}`}>
-          <span className="onb-eyebrow">Sent · We&rsquo;ll be in touch</span>
+          <span className="onb-eyebrow">Got it · Your turn</span>
           <h2
             className="onb-q"
             id={step === "confirm" ? "onb-q-active" : undefined}
           >
-            Got it. We&rsquo;ll reply within 1 business day with a couple of
-            time options.
+            Got it — pick a time that works for you.
           </h2>
           <div className="onb-confirm">
             <p className="onb-help">
-              We read every request personally. Expect a short, specific
-              reply — not a templated form letter.
+              Your note is in our inbox. Grab a slot below and we&rsquo;ll
+              walk in already up to speed on your situation.
             </p>
+            <div className="onb-confirm-actions">
+              <a
+                className="onb-book"
+                href={BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>Pick a time</span>
+                <span aria-hidden="true">→</span>
+              </a>
+              <a
+                className="onb-mailto"
+                href={`mailto:${site.email}?subject=${mailtoSubject}`}
+              >
+                <span>Prefer email · {site.email}</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
             <div className="summary">
               <div>
                 <span className="k">Name</span>
@@ -344,16 +363,7 @@ export function BookingModal() {
                 <span className="v">{form.systems}</span>
               </div>
             </div>
-            <div className="onb-confirm-actions">
-              <a
-                className="onb-mailto"
-                href={`mailto:${site.email}?subject=${mailtoSubject}`}
-              >
-                <span>
-                  Or write us directly · {site.email}
-                </span>
-                <span aria-hidden="true">→</span>
-              </a>
+            <div className="onb-confirm-close">
               <button
                 type="button"
                 className="onb-done"

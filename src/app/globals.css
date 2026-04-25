@@ -2820,6 +2820,33 @@ details.faq {
   align-items: stretch;
   margin-top: 4px;
 }
+.onb-book {
+  flex: 1 1 280px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--signal);
+  border: 1px solid var(--signal);
+  color: var(--signal-ink);
+  padding: 18px 22px;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  min-width: 0;
+}
+.onb-book:hover {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: #f5eded;
+}
+.onb-confirm-close {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
 .onb-mailto {
   flex: 1 1 auto;
   display: inline-flex;
