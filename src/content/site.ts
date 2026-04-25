@@ -6,6 +6,7 @@ export const site = {
   tagline:
     "Boutique AI consultancy helping operators turn today's tools into measurable business wins",
   email: "hello@gamechanger-ai.dev",
+  bookingUrl: "https://calendar.app.google/8BVJwLZPqEsmTXEeA",
   cities: ["Vancouver", "Santa Cruz", "Medellín"],
   nav: [
     { label: "Services", href: "#services" },
