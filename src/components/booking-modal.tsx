@@ -319,8 +319,8 @@ export function BookingModal() {
           </h2>
           <div className="onb-confirm">
             <p className="onb-help">
-              Marc and the team review every request personally. Expect a
-              short, specific reply — not a templated form letter.
+              We read every request personally. Expect a short, specific
+              reply — not a templated form letter.
             </p>
             <div className="summary">
               <div>
