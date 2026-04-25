@@ -2813,25 +2813,68 @@ details.faq {
   max-width: 60ch;
   white-space: pre-wrap;
 }
-.onb-confirm .ics-btn {
-  background: var(--signal);
-  color: var(--signal-ink);
-  border: 1px solid var(--signal);
-  padding: 18px 28px;
-  font-family: var(--font-geist-mono);
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  cursor: pointer;
+.onb-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 4px;
+}
+.onb-mailto {
+  flex: 1 1 auto;
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  align-self: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--foreground);
+  padding: 16px 20px;
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--foreground);
+  transition: background 0.18s ease, color 0.18s ease;
+  min-width: 0;
 }
-.onb-confirm .ics-btn:hover {
+.onb-mailto > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.onb-mailto:hover {
   background: var(--foreground);
-  border-color: var(--foreground);
-  color: #fff;
+  color: #f5eded;
+}
+.onb-done {
+  flex-shrink: 0;
+  background: var(--foreground);
+  color: #f5eded;
+  border: 1px solid var(--foreground);
+  padding: 16px 22px;
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.onb-done:hover {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--signal-ink);
+}
+.onb-submit-err {
+  margin-top: 4px;
+  text-transform: none;
+  letter-spacing: 0.05em;
+  font-family: var(--font-geist-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c84a4a;
+}
+.onb-submit-err a {
+  color: var(--signal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 @media (max-width: 900px) {

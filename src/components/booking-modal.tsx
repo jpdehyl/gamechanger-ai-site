@@ -7,9 +7,10 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
+import { site } from "@/content/site";
 
 type NumericStep = 1 | 2;
-type Step = NumericStep | "confirm";
+type Step = NumericStep | "submitting" | "confirm";
 type FormField = "name" | "email" | "company" | "pain" | "systems";
 
 const TOTAL = 2;
@@ -33,9 +34,8 @@ export function BookingModal() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>(1);
   const [form, setForm] = useState<Record<FormField, string>>(INITIAL_FORM);
-  const [errors, setErrors] = useState<
-    Partial<Record<FormField, string>>
-  >({});
+  const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
   // Any element with `data-booker` opens the modal
@@ -48,6 +48,7 @@ export function BookingModal() {
       setOpen(true);
       setStep(1);
       setErrors({});
+      setSubmitError(null);
     }
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
@@ -110,10 +111,34 @@ export function BookingModal() {
     [form]
   );
 
+  const submit = useCallback(async () => {
+    setSubmitError(null);
+    setStep("submitting");
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error ?? `request-failed:${res.status}`);
+      }
+      setStep("confirm");
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
+      setSubmitError(detail);
+      setStep(2);
+    }
+  }, [form]);
+
   const handleNext = () => {
     if (typeof step !== "number") return;
     if (!validate(step)) return;
-    if (step === TOTAL) setStep("confirm");
+    if (step === TOTAL) void submit();
     else setStep((step + 1) as NumericStep);
   };
 
@@ -121,20 +146,6 @@ export function BookingModal() {
     if (typeof step === "number" && step > 1) {
       setStep((step - 1) as NumericStep);
     }
-  };
-
-  const handleSkip = () => {
-    if (typeof step !== "number" || step < 2) return;
-    if (!validate(1)) {
-      setStep(1);
-      return;
-    }
-    setForm((prev) => ({
-      ...prev,
-      pain: prev.pain.trim() || "(to discuss on call)",
-      systems: prev.systems.trim() || "(to discuss on call)",
-    }));
-    setStep("confirm");
   };
 
   const handleKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
@@ -149,66 +160,20 @@ export function BookingModal() {
     }
   };
 
-  const downloadICS = () => {
-    const start = new Date();
-    start.setDate(start.getDate() + 1);
-    while (start.getDay() === 0 || start.getDay() === 6) {
-      start.setDate(start.getDate() + 1);
-    }
-    start.setHours(10, 0, 0, 0);
-    const end = new Date(start.getTime() + 45 * 60_000);
-    const fmt = (dt: Date) =>
-      dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    const uid = `gc-${Date.now()}@gamechanger-ai.dev`;
-    const descLines = [
-      "Working session with GameChanger AI.",
-      "",
-      "Submitted:",
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      `Company: ${form.company}`,
-      `Pain: ${form.pain}`,
-      `Systems: ${form.systems}`,
-    ];
-    const desc = descLines.join("\\n");
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//GameChanger AI//Booking//EN",
-      "CALSCALE:GREGORIAN",
-      "METHOD:REQUEST",
-      "BEGIN:VEVENT",
-      `UID:${uid}`,
-      `DTSTAMP:${fmt(new Date())}`,
-      `DTSTART:${fmt(start)}`,
-      `DTEND:${fmt(end)}`,
-      "SUMMARY:GameChanger AI — Working session",
-      `DESCRIPTION:${desc}`,
-      "LOCATION:Video call (link to follow)",
-      "ORGANIZER;CN=GameChanger AI:mailto:hello@gamechanger-ai.dev",
-      `ATTENDEE;CN=${form.name};RSVP=TRUE:mailto:${form.email}`,
-      "STATUS:CONFIRMED",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "gamechanger-working-session.ics";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.setTimeout(() => URL.revokeObjectURL(url), 2_000);
-  };
-
   if (!open) return null;
 
-  const currentNum = step === "confirm" ? null : step;
+  const currentNum = step === 1 || step === 2 ? step : null;
+  const isSubmitting = step === "submitting";
   const stepLabel =
     step === "confirm"
-      ? "Review & book"
-      : `Step ${String(step).padStart(2, "0")} / 0${TOTAL}`;
+      ? "Sent · Awaiting reply"
+      : isSubmitting
+        ? "Sending…"
+        : `Step ${String(step).padStart(2, "0")} / 0${TOTAL}`;
+
+  const mailtoSubject = encodeURIComponent(
+    `Working session — ${form.company || "intro"}`
+  );
 
   return (
     <div
@@ -234,7 +199,9 @@ export function BookingModal() {
         {STEPS.map((s) => {
           const isActive = currentNum === s.step;
           const isDone =
-            step === "confirm" || (currentNum !== null && s.step < currentNum);
+            step === "confirm" ||
+            isSubmitting ||
+            (currentNum !== null && s.step < currentNum);
           return (
             <div
               key={s.step}
@@ -255,7 +222,7 @@ export function BookingModal() {
         <div className={`onb-step${step === 1 ? " active" : ""}`}>
           <span className="onb-eyebrow">Step 01 / 02 · Introductions</span>
           <h2 className="onb-q" id={step === 1 ? "onb-q-active" : undefined}>
-            Who is this for, and where should the invite land?
+            Who is this for, and where should the reply land?
           </h2>
           <div className="onb-stack">
             <div className="onb-field">
@@ -326,19 +293,35 @@ export function BookingModal() {
                 <div className="onb-err">{errors.systems}</div>
               )}
             </div>
+            {submitError && (
+              <div className="onb-err onb-submit-err">
+                Couldn&rsquo;t send — please retry, or email us at{" "}
+                <a href={`mailto:${site.email}`}>{site.email}</a>.
+              </div>
+            )}
           </div>
         </div>
 
+        <div className={`onb-step${isSubmitting ? " active" : ""}`}>
+          <span className="onb-eyebrow">Sending…</span>
+          <h2 className="onb-q">Handing this to the team.</h2>
+          <p className="onb-help">One moment — sending your note.</p>
+        </div>
+
         <div className={`onb-step${step === "confirm" ? " active" : ""}`}>
-          <span className="onb-eyebrow">Confirmed · Ready to book</span>
+          <span className="onb-eyebrow">Sent · We&rsquo;ll be in touch</span>
           <h2
             className="onb-q"
             id={step === "confirm" ? "onb-q-active" : undefined}
           >
-            Here is what we have. Add the 45-min working session to your
-            calendar.
+            Got it. We&rsquo;ll reply within 1 business day with a couple of
+            time options.
           </h2>
           <div className="onb-confirm">
+            <p className="onb-help">
+              Marc and the team review every request personally. Expect a
+              short, specific reply — not a templated form letter.
+            </p>
             <div className="summary">
               <div>
                 <span className="k">Name</span>
@@ -361,43 +344,57 @@ export function BookingModal() {
                 <span className="v">{form.systems}</span>
               </div>
             </div>
-            <button type="button" className="ics-btn" onClick={downloadICS}>
-              Download .ics invite <span aria-hidden="true">↓</span>
-            </button>
-            <p className="onb-help">
-              The invite schedules a 45-minute working session for the next
-              business day at 10:00 local time. We will confirm by email within
-              2 business days and adjust the time if needed.
-            </p>
+            <div className="onb-confirm-actions">
+              <a
+                className="onb-mailto"
+                href={`mailto:${site.email}?subject=${mailtoSubject}`}
+              >
+                <span>
+                  Or write us directly · {site.email}
+                </span>
+                <span aria-hidden="true">→</span>
+              </a>
+              <button
+                type="button"
+                className="onb-done"
+                onClick={() => setOpen(false)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="onb-foot">
-        <div className="onb-foot-left">
-          <span>{stepLabel}</span>
-          {typeof step === "number" && step >= 2 && (
-            <button type="button" className="onb-skip" onClick={handleSkip}>
-              Skip to booking →
-            </button>
-          )}
-        </div>
-        {step !== "confirm" && (
+      {step !== "confirm" && (
+        <div className="onb-foot">
+          <div className="onb-foot-left">
+            <span>{stepLabel}</span>
+          </div>
           <div className="onb-nav">
             <button
               type="button"
               className="onb-back"
               onClick={handleBack}
-              disabled={step === 1}
+              disabled={step === 1 || isSubmitting}
             >
               ← Back
             </button>
-            <button type="button" className="onb-next" onClick={handleNext}>
-              {step === TOTAL ? "Review →" : "Continue →"}
+            <button
+              type="button"
+              className="onb-next"
+              onClick={handleNext}
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? "Sending…"
+                : step === TOTAL
+                  ? "Send →"
+                  : "Continue →"}
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
