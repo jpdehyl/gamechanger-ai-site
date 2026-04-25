@@ -98,11 +98,24 @@
 .masthead-mark {
   font-family: var(--font-serif-display);
   font-weight: 400;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: clamp(34px, 7vw, 88px);
   line-height: 0.95;
   letter-spacing: -0.015em;
   color: var(--foreground);
   margin-top: 4px;
+}
+@media (max-width: 700px) {
+  .masthead-inner {
+    padding: 16px 24px 22px;
+    gap: 8px;
+  }
+  .masthead-mark {
+    font-size: 34px;
+    line-height: 1;
+  }
+  .masthead-meta {
+    padding-bottom: 8px;
+  }
 }
 .masthead-tagline-row {
   display: flex;
@@ -209,6 +222,113 @@
 }
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* Mobile nav menu (details/summary disclosure) */
+.nav-mobile {
+  position: relative;
+  display: none;
+  margin-left: auto;
+}
+@media (max-width: 899px) {
+  .nav-mobile {
+    display: block;
+  }
+}
+.nav-mobile > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 9px 8px;
+  border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
+  background: transparent;
+}
+.nav-mobile > summary::-webkit-details-marker {
+  display: none;
+}
+.nav-mobile > summary .bar {
+  display: block;
+  height: 1px;
+  background: var(--foreground);
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+.nav-mobile[open] > summary {
+  background: var(--foreground);
+  border-color: var(--foreground);
+}
+.nav-mobile[open] > summary .bar {
+  background: var(--background);
+}
+.nav-mobile[open] > summary .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.nav-mobile[open] > summary .bar:nth-child(2) {
+  opacity: 0;
+}
+.nav-mobile[open] > summary .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+.nav-mobile-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  min-width: 220px;
+  background: var(--background);
+  border: 1px solid var(--rule-strong);
+  display: grid;
+  z-index: 60;
+  box-shadow: 0 18px 28px -22px rgba(0, 0, 0, 0.18);
+}
+.nav-mobile-link {
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.nav-mobile-link:last-child {
+  border-bottom: 0;
+}
+.nav-mobile-link:hover {
+  background: var(--background-elev);
+  color: var(--signal);
+}
+.nav-mobile-link.is-book {
+  background: var(--foreground);
+  color: #f5eded;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-mobile-link.is-book:hover {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+.nav-mobile-link.is-book .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--signal);
+  display: inline-block;
+}
+.nav-mobile-link.is-book:hover .dot {
+  background: var(--signal-ink);
+}
+@media (min-width: 900px) {
+  .nav-mobile {
+    display: none !important;
+  }
+}
+@media (max-width: 899px) {
+  .nav-book {
+    display: none;
+  }
 }
 
 /* ---------- Buttons ---------- */
@@ -881,6 +1001,19 @@ h1.hero {
 }
 .stat.last {
   padding-left: 24px;
+}
+@media (max-width: 900px) {
+  .stat.first,
+  .stat.mid,
+  .stat.last {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .stat.first .label-top,
+  .stat.first .desc,
+  .stat.first .value {
+    padding-right: 0;
+  }
 }
 
 /* ---------- Hero Mondrian plate ---------- */
@@ -2366,7 +2499,7 @@ details.faq {
 }
 .onb-progress {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   border-bottom: 1px solid var(--rule);
 }
 .onb-progress .cell {
@@ -2441,6 +2574,31 @@ details.faq {
   line-height: 1.55;
   color: var(--foreground-mute);
   max-width: 52ch;
+}
+.onb-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.onb-stack .onb-field input,
+.onb-stack .onb-field textarea {
+  font-size: clamp(18px, 1.8vw, 22px);
+  padding: 8px 0;
+}
+.onb-stack .onb-field textarea {
+  min-height: 96px;
+  font-family: var(--font-geist-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.onb-label {
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--foreground-mute);
+  display: block;
+  margin-bottom: 4px;
 }
 .onb-field input,
 .onb-field textarea {

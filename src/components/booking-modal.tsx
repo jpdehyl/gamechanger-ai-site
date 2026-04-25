@@ -8,18 +8,15 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 
-type NumericStep = 1 | 2 | 3 | 4 | 5;
+type NumericStep = 1 | 2;
 type Step = NumericStep | "confirm";
 type FormField = "name" | "email" | "company" | "pain" | "systems";
 
-const TOTAL = 5;
+const TOTAL = 2;
 
 const STEPS: Array<{ step: NumericStep; label: string }> = [
-  { step: 1, label: "Name" },
-  { step: 2, label: "Email" },
-  { step: 3, label: "Company" },
-  { step: 4, label: "Pain" },
-  { step: 5, label: "Systems" },
+  { step: 1, label: "You" },
+  { step: 2, label: "The work" },
 ];
 
 const INITIAL_FORM: Record<FormField, string> = {
@@ -36,7 +33,9 @@ export function BookingModal() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>(1);
   const [form, setForm] = useState<Record<FormField, string>>(INITIAL_FORM);
-  const [errors, setErrors] = useState<Partial<Record<NumericStep, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<FormField, string>>
+  >({});
   const bodyRef = useRef<HTMLDivElement>(null);
 
   // Any element with `data-booker` opens the modal
@@ -84,34 +83,29 @@ export function BookingModal() {
 
   const updateField = (key: FormField, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
   };
 
   const validate = useCallback(
     (n: NumericStep): boolean => {
-      const nextErrors: Partial<Record<NumericStep, string>> = {};
-      let valid = true;
-      if (n === 1 && form.name.trim().length < 2) {
-        nextErrors[1] = "Name required";
-        valid = false;
+      const next: Partial<Record<FormField, string>> = {};
+      if (n === 1) {
+        if (form.name.trim().length < 2) next.name = "Name required";
+        if (form.company.trim().length < 2) next.company = "Company required";
+        if (!EMAIL_RE.test(form.email.trim())) next.email = "Valid email required";
       }
-      if (n === 2 && !EMAIL_RE.test(form.email.trim())) {
-        nextErrors[2] = "Valid email required";
-        valid = false;
+      if (n === 2) {
+        if (form.pain.trim().length < 8) next.pain = "A sentence or two, please";
+        if (form.systems.trim().length < 3)
+          next.systems = "At least one system";
       }
-      if (n === 3 && form.company.trim().length < 2) {
-        nextErrors[3] = "Company name required";
-        valid = false;
-      }
-      if (n === 4 && form.pain.trim().length < 8) {
-        nextErrors[4] = "A sentence or two, please";
-        valid = false;
-      }
-      if (n === 5 && form.systems.trim().length < 3) {
-        nextErrors[5] = "At least one system";
-        valid = false;
-      }
-      setErrors(nextErrors);
-      return valid;
+      setErrors(next);
+      return Object.keys(next).length === 0;
     },
     [form]
   );
@@ -131,19 +125,12 @@ export function BookingModal() {
 
   const handleSkip = () => {
     if (typeof step !== "number" || step < 2) return;
-    if (form.name.trim().length < 2) {
+    if (!validate(1)) {
       setStep(1);
-      setErrors({ 1: "Name required first" });
-      return;
-    }
-    if (!EMAIL_RE.test(form.email.trim())) {
-      setStep(2);
-      setErrors({ 2: "Valid email required first" });
       return;
     }
     setForm((prev) => ({
       ...prev,
-      company: prev.company.trim() || "(to discuss on call)",
       pain: prev.pain.trim() || "(to discuss on call)",
       systems: prev.systems.trim() || "(to discuss on call)",
     }));
@@ -266,92 +253,80 @@ export function BookingModal() {
 
       <div className="onb-body" ref={bodyRef}>
         <div className={`onb-step${step === 1 ? " active" : ""}`}>
-          <span className="onb-eyebrow">Step 01 / 05 · Introductions</span>
+          <span className="onb-eyebrow">Step 01 / 02 · Introductions</span>
           <h2 className="onb-q" id={step === 1 ? "onb-q-active" : undefined}>
-            What should we call you?
+            Who is this for, and where should the invite land?
           </h2>
-          <div className="onb-field">
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => updateField("name", e.target.value)}
-              placeholder="First and last name"
-              autoComplete="name"
-            />
+          <div className="onb-stack">
+            <div className="onb-field">
+              <label className="onb-label">Name</label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+                placeholder="First and last name"
+                autoComplete="name"
+              />
+              {errors.name && <div className="onb-err">{errors.name}</div>}
+            </div>
+            <div className="onb-field">
+              <label className="onb-label">Company</label>
+              <input
+                type="text"
+                value={form.company}
+                onChange={(e) => updateField("company", e.target.value)}
+                placeholder="Company name"
+                autoComplete="organization"
+              />
+              {errors.company && (
+                <div className="onb-err">{errors.company}</div>
+              )}
+            </div>
+            <div className="onb-field">
+              <label className="onb-label">Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => updateField("email", e.target.value)}
+                placeholder="you@company.com"
+                autoComplete="email"
+              />
+              {errors.email && <div className="onb-err">{errors.email}</div>}
+            </div>
           </div>
-          <div className="onb-err">{errors[1] ?? ""}</div>
         </div>
 
         <div className={`onb-step${step === 2 ? " active" : ""}`}>
-          <span className="onb-eyebrow">Step 02 / 05 · Contact</span>
+          <span className="onb-eyebrow">Step 02 / 02 · The work</span>
           <h2 className="onb-q" id={step === 2 ? "onb-q-active" : undefined}>
-            Where should the invite land?
-          </h2>
-          <div className="onb-field">
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => updateField("email", e.target.value)}
-              placeholder="you@company.com"
-              autoComplete="email"
-            />
-          </div>
-          <div className="onb-err">{errors[2] ?? ""}</div>
-        </div>
-
-        <div className={`onb-step${step === 3 ? " active" : ""}`}>
-          <span className="onb-eyebrow">Step 03 / 05 · Company</span>
-          <h2 className="onb-q" id={step === 3 ? "onb-q-active" : undefined}>
-            What company is this for?
-          </h2>
-          <div className="onb-field">
-            <input
-              type="text"
-              value={form.company}
-              onChange={(e) => updateField("company", e.target.value)}
-              placeholder="Company name"
-              autoComplete="organization"
-            />
-          </div>
-          <div className="onb-err">{errors[3] ?? ""}</div>
-        </div>
-
-        <div className={`onb-step${step === 4 ? " active" : ""}`}>
-          <span className="onb-eyebrow">Step 04 / 05 · Primary pain</span>
-          <h2 className="onb-q" id={step === 4 ? "onb-q-active" : undefined}>
-            Where is the operation hurting?
+            Where is the operation hurting, and what systems does it live in?
           </h2>
           <p className="onb-help">
-            One or two sentences is enough. We care about the real constraint,
-            not a polished statement.
+            One or two sentences each — the real constraint, not a polished
+            statement.
           </p>
-          <div className="onb-field">
-            <textarea
-              value={form.pain}
-              onChange={(e) => updateField("pain", e.target.value)}
-              placeholder="The thing that keeps costing time, visibility, or accuracy…"
-            />
+          <div className="onb-stack">
+            <div className="onb-field">
+              <label className="onb-label">Primary pain</label>
+              <textarea
+                value={form.pain}
+                onChange={(e) => updateField("pain", e.target.value)}
+                placeholder="The thing that keeps costing time, visibility, or accuracy…"
+              />
+              {errors.pain && <div className="onb-err">{errors.pain}</div>}
+            </div>
+            <div className="onb-field">
+              <label className="onb-label">Systems in play</label>
+              <textarea
+                value={form.systems}
+                onChange={(e) => updateField("systems", e.target.value)}
+                placeholder="ERP, CRM, spreadsheets, shared inboxes, internal tools — what the team actually opens daily."
+              />
+              {errors.systems && (
+                <div className="onb-err">{errors.systems}</div>
+              )}
+            </div>
           </div>
-          <div className="onb-err">{errors[4] ?? ""}</div>
-        </div>
-
-        <div className={`onb-step${step === 5 ? " active" : ""}`}>
-          <span className="onb-eyebrow">Step 05 / 05 · Systems in play</span>
-          <h2 className="onb-q" id={step === 5 ? "onb-q-active" : undefined}>
-            What systems does work live in today?
-          </h2>
-          <p className="onb-help">
-            ERP, CRM, spreadsheets, shared inboxes, bespoke internal tools —
-            whatever the team actually opens daily.
-          </p>
-          <div className="onb-field">
-            <textarea
-              value={form.systems}
-              onChange={(e) => updateField("systems", e.target.value)}
-              placeholder="e.g. NetSuite, Gmail shared inbox, a 14-tab ops spreadsheet, custom Rails admin…"
-            />
-          </div>
-          <div className="onb-err">{errors[5] ?? ""}</div>
         </div>
 
         <div className={`onb-step${step === "confirm" ? " active" : ""}`}>
