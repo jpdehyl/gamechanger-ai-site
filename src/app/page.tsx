@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { AiWire } from "@/components/ai-wire";
 import { BookingModal } from "@/components/booking-modal";
+import { MobileNav } from "@/components/mobile-nav";
 import {
   beforeAfter,
   cta,
@@ -83,32 +84,7 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <details className="nav-mobile" aria-label="Sections">
-            <summary aria-label="Open menu">
-              <span className="bar" aria-hidden="true" />
-              <span className="bar" aria-hidden="true" />
-              <span className="bar" aria-hidden="true" />
-            </summary>
-            <nav className="nav-mobile-panel" aria-label="Sections">
-              {site.nav.map((link) => (
-                <a
-                  className="nav-mobile-link"
-                  href={link.href}
-                  key={link.href}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <a
-                className="nav-mobile-link is-book"
-                href="#cta"
-                data-booker=""
-              >
-                <span className="dot" />
-                Book a session
-              </a>
-            </nav>
-          </details>
+          <MobileNav links={site.nav} />
           <a className="btn btn-primary nav-book" href="#cta" data-booker="">
             <span className="dot" />
             Book a session
