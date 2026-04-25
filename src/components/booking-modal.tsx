@@ -30,7 +30,8 @@ const INITIAL_FORM: Record<FormField, string> = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? site.bookingUrl;
+const BOOKING_URL =
+  process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || site.bookingUrl;
 
 export function BookingModal() {
   const [open, setOpen] = useState(false);
