@@ -83,7 +83,33 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <a className="btn btn-primary" href="#cta" data-booker="">
+          <details className="nav-mobile" aria-label="Sections">
+            <summary aria-label="Open menu">
+              <span className="bar" aria-hidden="true" />
+              <span className="bar" aria-hidden="true" />
+              <span className="bar" aria-hidden="true" />
+            </summary>
+            <nav className="nav-mobile-panel" aria-label="Sections">
+              {site.nav.map((link) => (
+                <a
+                  className="nav-mobile-link"
+                  href={link.href}
+                  key={link.href}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <a
+                className="nav-mobile-link is-book"
+                href="#cta"
+                data-booker=""
+              >
+                <span className="dot" />
+                Book a session
+              </a>
+            </nav>
+          </details>
+          <a className="btn btn-primary nav-book" href="#cta" data-booker="">
             <span className="dot" />
             Book a session
           </a>
